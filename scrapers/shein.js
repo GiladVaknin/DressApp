@@ -30,67 +30,90 @@ async function shain({
 
   if (colors.length) {
     for (color of colors) {
+      await page.waitForNavigation();
       await page.waitForSelector(`div[aria-label="Color"]`);
       const colorMenu = await page.$(`div[aria-label="Color"]`);
       const isOpen = await colorMenu.evaluate((node) =>
         node.getAttribute("aria-expanded")
       );
+
       if (!isOpen) {
-        await colorMenu.evaluate((node) => node.scrollIntoView(true));
-        await new Promise(async (res) => {
-          console.log(
-            await colorMenu.evaluate((node) => node.firstElementChild.click())
-          );
-          console.log("clicked");
-          setTimeout(res, 10000);
-        });
+        await colorMenu.evaluate((node) => node.scrollIntoView());
+        await page.click(`div[aria-label="Color"]`);
       }
-      await page.waitForNavigation();
+
       await page.waitForSelector(`img[title="${color}"]`);
       const colorButton = await colorMenu.$(`img[title="${color}"]`);
-      await colorButton.hover();
       await colorButton.evaluate(async (e) => await e.click());
-      await page.waitForNavigation();
     }
   }
 
   if (sizes.length) {
-    await page.waitForSelector(`div[aria-label="Size"]`);
-    const sizeMenu = await page.$(`div[aria-label="Size"]`);
-    const isOpen = await sizeMenu.evaluate((node) =>
-      node.getAttribute("aria-expanded")
-    );
-    if (!isOpen) {
-      await sizeMenu.evaluate((node) => node.scrollIntoView(true));
-      await new Promise(async (res) => {
-        await sizeMenu.evaluate((node) => node.firstElementChild.click());
-        res();
-      });
-    }
-    const allSizeButtons = sizeMenu.$$eval(".S-checkbox", (node) => {
-      console.log(node.innerText);
-      if (node.innerText) console.log("sd");
-    });
     for (size of sizes) {
-      await page.waitForSelector(`img[title="${size}"]`);
-      const colorButton = await colorMenu.$(`img[title="${size}"]`);
-      await colorButton.hover();
-      await new Promise((res) => setTimeout(res, 5000));
-      await colorButton.evaluate(async (e) => await e.click());
-    }
+      await page.waitForNavigation();
+      await page.waitForSelector(`div[aria-label="Size"]`);
+      const sizeMenu = await page.$(`div[aria-label="Size"]`);
+      const isOpen = await sizeMenu.evaluate((node) =>
+        node.getAttribute("aria-expanded")
+      );
 
-    // const items = await page.$$(".S-product-item");
-    // const allItems = [];
-    // for (let i = 0; i < items.length; i++) {
-    //   const item = items[i];
-    //   await item.evaluate((node) => node.scrollIntoView(true));
-    //   allItems.push(await getItem(item));
-    // }
+      if (!isOpen) {
+        await sizeMenu.evaluate((node) => node.scrollIntoView());
+        await page.click(`div[aria-label="Size"]`);
+      }
+      const viewMore = await sizeMenu.$(".side-filter__item-viewMore");
+      viewMore && (await viewMore.click());
+
+      await page.waitForSelector(`input[value="${size}"]`);
+      const sizeButton = await sizeMenu.$(`input[value="${size}"]`);
+      await sizeButton.evaluate(async (e) => await e.click());
+    }
   }
-  //   setTimeout(() => browser.close(), 10000);
+
+  await page.waitForSelector("a.S-product-item__img-container");
+  const allUrls = await Promise.all(
+    await page
+      .$$("a.S-product-item__img-container")
+      .then((elements) =>
+        elements.map(
+          async (el) =>
+            await el.evaluate(
+              (node) => "https://il.shein.com" + node.getAttribute("href")
+            )
+        )
+      )
+  );
+
+  getItem(allUrls[0], browser);
+  //   getItem(allUrls[1], browser);
+  //   getItem(allUrls[2], browser);
+  //   await browser.close();
+  //   return await Promise.all(allUrls.map(getItem));
 }
 
-// async function getItem(item) {
+async function getItem(itemUrl, browser) {
+  const page = await browser.newPage();
+  await page.goto(itemUrl);
+  await page.waitForSelector(".loaded");
+  console.log("NAVIGATION");
+  const imgSrc = await page
+    .$("img.j-verlok-lazy.loaded")
+    .then((imgElem) => imgElem.getProperty("data-src"));
+
+  console.log(imgSrc);
+
+  //   return new Promise((resolve, reject) => {
+  //     request.get(itemUrl, { timeout: 10000 }, async (err, response, body) => {
+  //       if (err) reject(err);
+  //       const item = { linkToBuy: itemUrl };
+
+  //       const $ = cheerio.load(body);
+  //       const imgSrc = $(".swiper-slide-active");
+  //       console.log(imgSrc.html());
+  //       //   console.log($.html());
+  //     });
+  //   });
+}
 //   const { imgSrc, productURL, productName, price } = stores.shein.OUTPUT;
 //   const isInView = await item.isIntersectingViewport();
 //   if (!isInView) {
@@ -101,11 +124,6 @@ async function shain({
 //   const nameDiv = await item.$(productName.selector);
 //   outputItem.productName = await nameDiv
 //     .getProperty(productName.property)
-//     .then((v) => v._remoteObject.value);
-
-//   const urlElement = await item.$(productURL.selector);
-//   outputItem.productURL = await urlElement
-//     .getProperty(productURL.property)
 //     .then((v) => v._remoteObject.value);
 
 //   const priceElement = await item.$(price.selector);
@@ -123,7 +141,8 @@ async function shain({
 
 shain({
   gender: "men",
-  category: "Clothing",
-  productType: "clothing",
-  colors: ["Black", "Brown", "Red"],
+  category: "tops",
+  productType: "tops",
+  colors: ["Black"],
+  sizes: ["XL"],
 });
