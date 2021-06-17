@@ -1,6 +1,5 @@
 const puppeteer = require("puppeteer");
 const request = require("request");
-const cheerio = require("cheerio");
 
 async function shain({
   gender = "",
@@ -9,10 +8,14 @@ async function shain({
   colors = [],
   sizes = [],
 }) {
+  const COLORS_TRANSLATE = {
+    Navy: "Blue",
+  };
+
   const browser = await puppeteer.launch({
     headless: false,
     // slowMo: 50,
-    defaultViewport: { width: 1600, height: 2000 },
+    defaultViewport: { width: 3000, height: 2000 },
   });
   const page = await browser.newPage();
   const finalURL = "https://il.shein.com/" + gender;
@@ -42,8 +45,10 @@ async function shain({
         await page.click(`div[aria-label="Color"]`);
       }
 
-      await page.waitForSelector(`img[title="${color}"]`);
-      const colorButton = await colorMenu.$(`img[title="${color}"]`);
+      const searchColor = COLORS_TRANSLATE[color] || color;
+
+      await page.waitForSelector(`img[title="${searchColor}"]`);
+      const colorButton = await colorMenu.$(`img[title="${searchColor}"]`);
       await colorButton.evaluate(async (e) => await e.click());
     }
   }
@@ -71,78 +76,89 @@ async function shain({
   }
 
   await page.waitForSelector("a.S-product-item__img-container");
-  const allUrls = await Promise.all(
-    await page
-      .$$("a.S-product-item__img-container")
-      .then((elements) =>
-        elements.map(
-          async (el) =>
-            await el.evaluate(
-              (node) => "https://il.shein.com" + node.getAttribute("href")
-            )
-        )
-      )
+  const allItems = await page.$$(".S-product-item");
+
+  for (item of allItems) {
+    await item.evaluate((node) => node.scrollIntoView(true));
+  }
+
+  //   getItem(allItems[0]);
+  //   getItem(allItems[2]);
+  //   getItem(allItems[1]);
+  const allItemsFormatted = await Promise.all(
+    allItems.map((i) => getItem(i, browser))
   );
-
-  getItem(allUrls[0], browser);
-  //   getItem(allUrls[1], browser);
-  //   getItem(allUrls[2], browser);
-  //   await browser.close();
-  //   return await Promise.all(allUrls.map(getItem));
+  for (item of allItemsFormatted) {
+    item.rank = await getRank(item.linkToBuy, browser);
+  }
+  await browser.close();
+  return allItemsFormatted;
 }
-
-async function getItem(itemUrl, browser) {
-  const page = await browser.newPage();
-  await page.goto(itemUrl);
-  await page.waitForSelector(".loaded");
-  console.log("NAVIGATION");
-  const imgSrc = await page
-    .$("img.j-verlok-lazy.loaded")
-    .then((imgElem) => imgElem.getProperty("data-src"));
-
-  console.log(imgSrc);
-
-  //   return new Promise((resolve, reject) => {
-  //     request.get(itemUrl, { timeout: 10000 }, async (err, response, body) => {
-  //       if (err) reject(err);
-  //       const item = { linkToBuy: itemUrl };
-
-  //       const $ = cheerio.load(body);
-  //       const imgSrc = $(".swiper-slide-active");
-  //       console.log(imgSrc.html());
-  //       //   console.log($.html());
-  //     });
-  //   });
-}
-//   const { imgSrc, productURL, productName, price } = stores.shein.OUTPUT;
-//   const isInView = await item.isIntersectingViewport();
-//   if (!isInView) {
-//     await item.evaluate((node) => node.scrollIntoView(true));
-//   }
-
-//   const outputItem = {};
-//   const nameDiv = await item.$(productName.selector);
-//   outputItem.productName = await nameDiv
-//     .getProperty(productName.property)
-//     .then((v) => v._remoteObject.value);
-
-//   const priceElement = await item.$(price.selector);
-//   outputItem.price = await priceElement
-//     .getProperty(price.property)
-//     .then((v) => v._remoteObject.value);
-
-//   const imgElement = await item.$(imgSrc.selector);
-//   outputItem.imgsrc = await imgElement
-//     .getProperty(imgSrc.property)
-//     .then((v) => v._remoteObject.value);
-
-//   console.log(outputItem);
-// }
 
 shain({
   gender: "men",
   category: "tops",
   productType: "tops",
-  colors: ["Black"],
+  colors: ["Navy"],
   sizes: ["XL"],
-});
+}).then(console.log);
+
+async function getItem(itemElem, browser) {
+  const item = { storeName: "shein" };
+  item.imgSrc = await itemElem
+    .$("img.falcon-lazyload")
+    .then((imgElem) => imgElem.getProperty("src"))
+    .then((handle) => handle.jsonValue());
+
+  item.title = await itemElem
+    .$(".S-product-item__name")
+    .then((elem) => elem.getProperty("innerText"))
+    .then((handle) => handle.jsonValue());
+
+  item.price = await itemElem
+    .$(".S-product-item__retail-price")
+    .then((elem) => elem.getProperty("innerText"))
+    .then(async (handle) => {
+      const priceWithShach = await handle.jsonValue();
+      return Number(priceWithShach.replace("₪", ""));
+    });
+
+  item.linkToBuy = await itemElem
+    .$("a.S-product-item__img-container")
+    .then((elem) => elem.getProperty("href"))
+    .then((handle) => handle.jsonValue());
+
+  //   item.rank = await getRank(item.linkToBuy, browser);
+  //   console.log(item);
+  return item;
+}
+
+async function getRank(linkToBuy, browser) {
+  request.post(
+    "https://il.shein.com/goods_detail/goodsListComment?_lang=en",
+    {
+      headers: {
+        referer:
+          "https://il.shein.com/Men-Letter-Cartoon-Graphic-Tee-p-2041627-cat-1980.html",
+      },
+    },
+    { spu_list: [{ spu: "M2012234422" }] }
+  );
+  const page = await browser.newPage();
+  await page.goto(linkToBuy);
+  //   await page.waitForNavigation();
+  await page.waitForSelector(".product-intro__head-reviews");
+  const rankElem = await page.$(".product-intro__head-reviews");
+
+  const avgRatingText = await rankElem.$eval(
+    "span",
+    (
+      node //Average Rating 4.9 5964 Reviews
+    ) => node.getAttribute("aria-label")
+  );
+
+  const rank = Number(avgRatingText.split(" ")[2]);
+  //   console.log(rank);
+  page.close();
+  return rank;
+}
