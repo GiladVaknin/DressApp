@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const request = require("request");
 
-async function shain({
+module.exports = async function shain({
   gender = "",
   category = "",
   productType = "",
@@ -13,7 +13,7 @@ async function shain({
   };
 
   const browser = await puppeteer.launch({
-    headless: false,
+    // headless: false,
     // slowMo: 50,
     defaultViewport: { width: 3000, height: 2000 },
   });
@@ -82,24 +82,18 @@ async function shain({
     await item.evaluate((node) => node.scrollIntoView(true));
   }
 
-  //   await getItem(allItems[0]);
-  //   await getItem(allItems[2]);
-  //   await getItem(allItems[1]);
   const allItemsFormatted = await Promise.all(allItems.map((i) => getItem(i)));
-  //   for (item of allItemsFormatted) {
-  //     item.rank = await getRank(item.linkToBuy, browser);
-  //   }
   await browser.close();
   return allItemsFormatted;
-}
+};
 
-shain({
-  gender: "men",
-  category: "tops",
-  productType: "tops",
-  colors: ["Navy"],
-  sizes: ["XL"],
-}).then(console.log);
+// shain({
+//   gender: "men",
+//   category: "tops",
+//   productType: "tops",
+//   colors: ["Navy"],
+//   sizes: ["XL"],
+// }).then(console.log);
 
 async function getItem(itemElem) {
   const item = { storeName: "shein" };
@@ -160,7 +154,7 @@ async function getRank(itemSPU, itemLinkToBuy) {
     request(options, (error, response, body) => {
       if (error) return resolve(error);
       body = JSON.parse(body);
-      if (!body.info?.length) return resolve(null);
+      if (!body.info || !body.info.length) return resolve(null);
       const rank = body.info[0]["comment_rank_average"];
       resolve(Number(rank));
     });
