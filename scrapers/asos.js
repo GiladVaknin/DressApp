@@ -101,10 +101,6 @@ async function main(product) {
 async function getItem(itemElem) {
   const item = { storeName: "Asos" };
 
-  item.imgSrc = await itemElem
-    .$("img")
-    .then((imgElem) => imgElem.getProperty("src"))
-    .then((handle) => handle.jsonValue());
   item.title = await itemElem
     .$("._3J74XsK")
     .then((elem) => elem.getProperty("innerText"))
@@ -124,6 +120,7 @@ async function getItem(itemElem) {
     .then((handle) => handle.jsonValue());
 
   item.rank = await getRank(item.linkToBuy);
+  item.imgSrc = await getImgSrc(item.linkToBuy);
 
   return item;
 }
@@ -159,6 +156,32 @@ async function getRank(itemLink, secondTry) {
     })
     .catch(function (error) {
       console.log("error");
+    });
+}
+
+async function getImgSrc(itemLink) {
+  var data = "";
+
+  var config = {
+    method: "get",
+    url: itemLink,
+    headers: {
+      Cookie:
+        "_abck=BC3E379FA5195C118296920B40183288~-1~YAAQpZf2SFB3tSd6AQAAi4x7Kgai7Ea4cVHwM0ZjhScj0fjlm5ZaE70yXbXKUSZnKp8w0bebwEw/w20KmgKhkNkf97RFdouAuhu2tsGghGISyAyFLCB3aUhIPCeSU7PD/ZuWoDXwtE0/tV41toZIOwar/9KyLo0JYt59+I8FSMdwnsiEFgMuqTm0HTBPUcv/vutW7tgvMXR8IGE+15kKv1EObAVS47VTrsWpiXDdqhyFLOmFyCm8iFWbofk/MOmimg7GTxkMnt///mVxnrDcl9TSavb+UXfFMNAouXFgKIOHQ+aEuMbWu/8ioSLZkrFM0dKLZ39JuMJ/xVpA5OeUOLzg1B3tIIAhSxxQil0Z/EjEPKmfdGE6k9K0DEfGdgheo5I5lZc=~-1~-1~-1; bm_sz=82DA8D51AB0F00505437788642B6D38C~YAAQpZf2SE93tSd6AQAAi4x7Kgy9S7c4694gfpWNQ9XF63/SJas3uRgz9IORrCNRWqKJ4jNXl+jzOrTOeWxIM86ucCIJZcrvIgxwdUPNI36Ij1dMe+DwhmOZl1lCocEaRMv74QjaWFwGLppuoWC9WkNsgtOrrymWeHYARpGPnTiVarWuh6WJdRziSL+n8w==; geocountry=IL",
+    },
+    data: data,
+  };
+
+  return axios(config)
+    .then(async function (response) {
+      const { window } = await new JSDOM(response.data, {
+        runScripts: "dangerously",
+      });
+
+      return window.window.asos.pdp.config.product.images[0].url;
+    })
+    .catch(function (error) {
+      console.log(error);
     });
 }
 
