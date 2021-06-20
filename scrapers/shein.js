@@ -1,7 +1,8 @@
 const puppeteer = require("puppeteer");
 const request = require("request");
 
-module.exports = async function shain({
+module.exports = shain;
+async function shain({
   gender = "",
   category = "",
   productType = "",
@@ -83,9 +84,10 @@ module.exports = async function shain({
   }
 
   const allItemsFormatted = await Promise.all(allItems.map((i) => getItem(i)));
+
   await browser.close();
   return allItemsFormatted;
-};
+}
 
 // shain({
 //   gender: "men",

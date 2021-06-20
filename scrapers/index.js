@@ -11,7 +11,18 @@ app.get("/filter", async (req, res) => {
 
   const sheinList = sheinScraper(query);
   const asosList = asosScraper(query);
-  Promise.all([asosList, sheinList]).then((lists) => res.json(lists));
+
+  const allResults = await Promise.all([asosList, sheinList]).catch(res.json);
+
+  console.log(asosList);
+  const mainResult = [];
+  allResults.forEach((val) =>
+    val.status === "fulfilled" ? mainResult.push(...val.value) : null
+  );
+
+  res.json(allResults);
 });
 
-app.listen(80);
+app.listen(80, () => {
+  console.log("LISTENING ON PORT 80");
+});

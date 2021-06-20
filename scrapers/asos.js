@@ -8,9 +8,10 @@ const { JSDOM } = jsdom;
 async function main(product) {
   try {
     const browser = await puppeteer.launch({
-      headless: false,
-      slowMo: 50,
+      // headless: false,
+      // slowMo: 50,
       defaultViewport: { width: 770, height: 1024 },
+      timeout: 500000,
     });
 
     const page = await browser.newPage();
@@ -48,7 +49,7 @@ async function main(product) {
         await page.waitForSelector(`li._3LB03xF`);
         const [colorBtn] = await page.$x(`//label[contains(., "${color}")]`);
         await colorBtn.click();
-        await page.waitForNavigation();
+        // await page.waitForNavigation({ waitUntil: "networkidle2" });
       }
     }
 
@@ -56,45 +57,35 @@ async function main(product) {
 
     if (size) {
       await page.setViewport({ width: 770, height: 1024 });
-      await size.click();
+      await size.evaluate((node) => node.click());
       for (const size of product.sizes) {
         await page.waitForSelector(`li._3LB03xF`);
         const [sizeSelect] = await page.$x(`//label[contains(., '${size}')]`);
         await sizeSelect.click();
-        await page.waitForNavigation();
+        // await page.waitForNavigation({ waitUntil: "networkidle2" });
       }
     }
 
     const items = await page.$$("._2qG85dG");
     const allItemsFormatted = [];
+
     if (items) {
       for (item of items) {
         await item.evaluate((node) => node.scrollIntoView());
-        allItemsFormatted.push(await getItem(item));
+        const gotItem = await getItem(item).catch((e) =>
+          console.log("GET ITEM EERRRORRRRR")
+        );
+        allItemsFormatted.push(gotItem);
       }
     }
 
-    let imgCount = 0;
-    let rankCount = 0;
-    for (item of allItemsFormatted) {
-      if (item.rank) {
-        rankCount++;
-      }
-      if (item.imgSrc.length > 3) {
-        imgCount++;
-      }
-    }
-    console.log(
-      "RC : ",
-      rankCount,
-      "  -----  ",
-      "IC : ",
-      imgCount,
-      "   -------   ",
-      allItemsFormatted.length
-    );
+    await browser.close();
+    return allItemsFormatted;
   } catch (err) {
-    console.log(err);
+    console.log(
+      "MAINERR!!!!!!!!!!!!!!!! =================================================== \n " +
+        err
+    );
   }
 }
 
@@ -155,7 +146,7 @@ async function getRank(itemLink, secondTry) {
       return d;
     })
     .catch(function (error) {
-      console.log("error");
+      console.log("error in RANK");
     });
 }
 
@@ -181,7 +172,7 @@ async function getImgSrc(itemLink) {
       return window.window.asos.pdp.config.product.images[0].url;
     })
     .catch(function (error) {
-      console.log(error);
+      console.log("error in imgSRC");
     });
 }
 
