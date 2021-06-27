@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer");
 const request = require("request");
+require("dotenv").config();
 
 module.exports = shain;
 async function shain({
@@ -9,12 +10,13 @@ async function shain({
   colors = [],
   sizes = [],
 }) {
-  const COLORS_TRANSLATE = {
+  const TRANSLATIONS = {
     Navy: "Blue",
+    Shirts: "Tops",
   };
-
+  const { headless } = process.env;
   const browser = await puppeteer.launch({
-    // headless: false,
+    headless,
     // slowMo: 50,
     defaultViewport: { width: 3000, height: 2000 },
   });
@@ -25,10 +27,11 @@ async function shain({
   const bannerCloseButton = await page.$("i.svgicon-close");
   bannerCloseButton && (await bannerCloseButton.click());
 
+  const searchType = TRANSLATIONS[productType] || productType;
   await page.waitForSelector(".header-v2__nav2");
   const categoryMenu = await page.$(".header-v2__nav2");
   const categoryButton = await categoryMenu.$(
-    `a[title="${productType.toUpperCase()}"]`
+    `a[title="${searchType.toUpperCase()}"]`
   );
   await categoryButton.evaluate(async (e) => await e.click());
 
@@ -46,7 +49,7 @@ async function shain({
         await page.click(`div[aria-label="Color"]`);
       }
 
-      const searchColor = COLORS_TRANSLATE[color] || color;
+      const searchColor = TRANSLATIONS[color] || color;
 
       await page.waitForSelector(`img[title="${searchColor}"]`);
       const colorButton = await colorMenu.$(`img[title="${searchColor}"]`);

@@ -3,3 +3,7 @@ services:
     build: ./scrapers
     ports:
       - 8080:80
+    cap_add:
+      - SYS_ADMIN
+    environment:
+      - PORT=80

@@ -23,6 +23,7 @@ app.get("/filter", async (req, res) => {
   res.json(allResults);
 });
 
-app.listen(80, () => {
-  console.log("LISTENING ON PORT 80");
+const { PORT } = process.env;
+app.listen(PORT, () => {
+  console.log(`LISTENING ON PORT ${PORT}`);
 });

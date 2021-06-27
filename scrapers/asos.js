@@ -6,9 +6,11 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
 async function main(product) {
+  const { headless } = process.env;
+
   try {
     const browser = await puppeteer.launch({
-      // headless: false,
+      headless,
       // slowMo: 50,
       defaultViewport: { width: 770, height: 1024 },
       timeout: 500000,
@@ -19,9 +21,11 @@ async function main(product) {
     await page.goto(BASE_URL + "/" + product.gender, {
       waitUntil: "networkidle2",
     });
-
+    console.log("INPAGE");
+    await page.waitForSelector('button[aria-label="Open navigation menu"]');
     const menu = await page.$('button[aria-label="Open navigation menu"]');
     await menu.click();
+    console.log("NAVIGATINMENU");
 
     const [category] = await page.$x(
       `//button[contains(., '${product.category}')]`
@@ -31,6 +35,7 @@ async function main(product) {
       await category.click();
     }
 
+    console.log("NAVIGATINMENU");
     const [productType] = await page.$x(
       `//a[contains(., '${product.productType}')]`
     );
