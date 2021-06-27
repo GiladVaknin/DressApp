@@ -22,12 +22,33 @@ async function sheinPreview(linkToBuy) {
     .then((elem) => elem.getProperty("innerText"))
     .then((handle) => handle.jsonValue());
 
-  item.price = await page
-    .$(".product-intro__head-price.j-expose__product-intro__head-price")
+  const priceDiv = await page.$(".product-intro__head-price");
+
+  item.price = await priceDiv
+    .$("span")
     .then((elem) => elem.getProperty("innerText"))
     .then(async (handle) => {
       const priceWithShach = await handle.jsonValue();
       return Number(priceWithShach.replace("₪", ""));
+    });
+
+  item.prevPrice = await priceDiv.$(".del-price").then(async (div) => {
+    if (!div) return null;
+    const priceWithShach = await div
+      .getProperty("innerText")
+      .then((handle) => handle.jsonValue());
+
+    return Number(priceWithShach.replace("₪", ""));
+  });
+
+  item.discountPercent = await priceDiv
+    .$(".discount-label")
+    .then(async (div) => {
+      if (!div) return null;
+      const discountWithSymbols = await div
+        .getProperty("innerText")
+        .then((handle) => handle.jsonValue());
+      return Number(discountWithSymbols.replace("-", "").replace("%", ""));
     });
 
   item.rank = await page
