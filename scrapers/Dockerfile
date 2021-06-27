@@ -11,4 +11,6 @@ USER pptruser
 
 COPY . .
 
+ENV headless=true
+
 CMD [ "npm", "start" ]

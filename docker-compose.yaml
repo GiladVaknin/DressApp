@@ -7,3 +7,4 @@ services:
       - SYS_ADMIN
     environment:
       - PORT=80
+      - headless=true

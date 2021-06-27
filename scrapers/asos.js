@@ -6,12 +6,12 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
 async function main(product) {
-  const { headless } = process.env;
+  const headless = process.env.headless || false;
 
   try {
     const browser = await puppeteer.launch({
       headless,
-      // slowMo: 50,
+      slowMo: 50,
       defaultViewport: { width: 770, height: 1024 },
       timeout: 500000,
     });
@@ -21,8 +21,9 @@ async function main(product) {
     await page.goto(BASE_URL + "/" + product.gender, {
       waitUntil: "networkidle2",
     });
-    console.log("INPAGE");
-    await page.waitForSelector('button[aria-label="Open navigation menu"]');
+    const inner_html = await page.$eval("body", (element) => element.innerHTML);
+    console.log(inner_html);
+    // await page.waitForSelector('button[aria-label="Open navigation menu"]');
     const menu = await page.$('button[aria-label="Open navigation menu"]');
     await menu.click();
     console.log("NAVIGATINMENU");

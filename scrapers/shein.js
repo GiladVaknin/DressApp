@@ -14,7 +14,7 @@ async function shain({
     Navy: "Blue",
     Shirts: "Tops",
   };
-  const { headless } = process.env;
+  const headless = process.env.headless || false;
   const browser = await puppeteer.launch({
     headless,
     // slowMo: 50,
