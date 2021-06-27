@@ -1,6 +1,7 @@
 const express = require("express");
 const sheinScraper = require("./shein");
 const asosScraper = require("./asos");
+const previews = require("./previews");
 
 const app = express();
 
@@ -15,6 +16,12 @@ app.get("/filter", async (req, res) => {
   const allResults = await Promise.all([asosList, sheinList]).catch(res.json);
 
   res.json(shuffleResults(allResults));
+});
+
+app.get("/preview", async (req, res) => {
+  const { storeName, linkToBuy } = req.body.query;
+  const preview = await previews[storeName](linkToBuy);
+  res.json(preview);
 });
 
 const { PORT } = process.env;
