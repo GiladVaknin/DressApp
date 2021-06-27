@@ -34,7 +34,6 @@ function shuffleResults(allResults) {
   allResults
     .filter((v) => v)
     .forEach((store) => {
-      console.log(store);
       store.filter((v) => v).forEach((item) => output.push(item));
     });
   return output;
