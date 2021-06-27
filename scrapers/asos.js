@@ -78,10 +78,11 @@ async function main(product) {
     if (items) {
       for (item of items) {
         await item.evaluate((node) => node.scrollIntoView());
-        const gotItem = await getItem(item).catch((e) =>
-          console.log("GET ITEM EERRRORRRRR")
-        );
-        allItemsFormatted.push(gotItem);
+        const itemLink =  await item
+        .$("a._3TqU78D")
+        .then((elem) => elem.getProperty("href"))
+        .then((handle) => handle.jsonValue());
+        allItemsFormatted.push(itemLink);
       }
     }
 
