@@ -82,7 +82,10 @@ async function main(product) {
         .$("a._3TqU78D")
         .then((elem) => elem.getProperty("href"))
         .then((handle) => handle.jsonValue());
-        allItemsFormatted.push(itemLink);
+        allItemsFormatted.push({
+          storeName: "Asos",
+          linkToBuy:itemLink,
+        });
       }
     }
 
