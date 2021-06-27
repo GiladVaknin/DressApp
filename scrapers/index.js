@@ -14,16 +14,21 @@ app.get("/filter", async (req, res) => {
 
   const allResults = await Promise.all([asosList, sheinList]).catch(res.json);
 
-  console.log(asosList);
-  const mainResult = [];
-  allResults.forEach((val) =>
-    val.status === "fulfilled" ? mainResult.push(...val.value) : null
-  );
-
-  res.json(allResults);
+  res.json(shuffleResults(allResults));
 });
 
 const { PORT } = process.env;
 app.listen(PORT, () => {
   console.log(`LISTENING ON PORT ${PORT}`);
 });
+
+function shuffleResults(allResults) {
+  const output = [];
+  allResults
+    .filter((v) => v)
+    .forEach((store) => {
+      console.log(store);
+      store.filter((v) => v).forEach((item) => output.push(item));
+    });
+  return output;
+}

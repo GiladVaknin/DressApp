@@ -82,9 +82,9 @@ async function shain({
   await page.waitForSelector("a.S-product-item__img-container");
   const allItems = await page.$$(".S-product-item");
 
-  for (item of allItems) {
-    await item.evaluate((node) => node.scrollIntoView(true));
-  }
+  // for (item of allItems) {
+  //   await item.evaluate((node) => node.scrollIntoView(true));
+  // }
 
   const allItemsFormatted = await Promise.all(allItems.map((i) => getItem(i)));
 
@@ -92,45 +92,37 @@ async function shain({
   return allItemsFormatted;
 }
 
-// shain({
-//   gender: "men",
-//   category: "tops",
-//   productType: "tops",
-//   colors: ["Navy"],
-//   sizes: ["XL"],
-// }).then(console.log);
-
 async function getItem(itemElem) {
-  const item = { storeName: "shein" };
-  item.imgSrc = await itemElem
-    .$("img.falcon-lazyload")
-    .then((imgElem) => imgElem.getProperty("src"))
-    .then((handle) => handle.jsonValue());
+  const item = { storeName: "Shein" };
+  // item.imgSrc = await itemElem
+  //   .$("img.falcon-lazyload")
+  //   .then((imgElem) => imgElem.getProperty("src"))
+  //   .then((handle) => handle.jsonValue());
 
-  item.title = await itemElem
-    .$(".S-product-item__name")
-    .then((elem) => elem.getProperty("innerText"))
-    .then((handle) => handle.jsonValue());
+  // item.title = await itemElem
+  //   .$(".S-product-item__name")
+  //   .then((elem) => elem.getProperty("innerText"))
+  //   .then((handle) => handle.jsonValue());
 
-  item.price = await itemElem
-    .$(".S-product-item__retail-price")
-    .then((elem) => elem.getProperty("innerText"))
-    .then(async (handle) => {
-      const priceWithShach = await handle.jsonValue();
-      return Number(priceWithShach.replace("₪", ""));
-    });
+  // item.price = await itemElem
+  //   .$(".S-product-item__retail-price")
+  //   .then((elem) => elem.getProperty("innerText"))
+  //   .then(async (handle) => {
+  //     const priceWithShach = await handle.jsonValue();
+  //     return Number(priceWithShach.replace("₪", ""));
+  //   });
 
   item.linkToBuy = await itemElem
     .$("a.S-product-item__img-container")
     .then((elem) => elem.getProperty("href"))
     .then((handle) => handle.jsonValue());
 
-  const itemSPU = await itemElem.$eval(
-    "a.S-product-item__img-container",
-    (node) => node.getAttribute("data-spu")
-  );
+  // const itemSPU = await itemElem.$eval(
+  //   "a.S-product-item__img-container",
+  //   (node) => node.getAttribute("data-spu")
+  // );
 
-  item.rank = await getRank(itemSPU, item.linkToBuy);
+  // item.rank = await getRank(itemSPU, item.linkToBuy);
 
   return item;
 }
@@ -165,3 +157,11 @@ async function getRank(itemSPU, itemLinkToBuy) {
     });
   });
 }
+
+// shain({
+//   gender: "men",
+//   category: "tops",
+//   productType: "tops",
+//   colors: ["Navy"],
+//   sizes: ["XL"],
+// }).then(console.log);
