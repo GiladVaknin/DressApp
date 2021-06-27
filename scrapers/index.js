@@ -7,7 +7,7 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/filter", async (req, res) => {
+app.get("/api/filter", async (req, res) => {
   const { query } = req.body;
 
   const sheinList = sheinScraper(query);
@@ -18,7 +18,7 @@ app.get("/filter", async (req, res) => {
   res.json(shuffleResults(allResults));
 });
 
-app.get("/preview", async (req, res) => {
+app.get("/api/preview", async (req, res) => {
   const { storeName, linkToBuy } = req.body.query;
   const preview = await previews[storeName](linkToBuy);
   res.json(preview);
