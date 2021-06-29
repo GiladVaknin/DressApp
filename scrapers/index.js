@@ -32,11 +32,10 @@ app.listen(PORT, () => {
 
 function shuffleResults(allResults) {
   const output = [];
-  allResults
-    .filter((v) => v)
-    .forEach((store) => {
-      console.log(store);
-      store.filter((v) => v).forEach((item) => output.push(item));
-    });
+  const longestLength = Math.max(...allResults.map((s) => s.length));
+  for (let i = 0; i < longestLength; i++)
+    for (let j = 0; j < allResults.length; j++) {
+      if (allResults[j][i]) output.push(allResults[j][i]);
+    }
   return output;
 }

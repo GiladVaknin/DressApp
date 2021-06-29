@@ -78,13 +78,13 @@ async function main(product) {
     if (items) {
       for (item of items) {
         await item.evaluate((node) => node.scrollIntoView());
-        const itemLink =  await item
-        .$("a._3TqU78D")
-        .then((elem) => elem.getProperty("href"))
-        .then((handle) => handle.jsonValue());
+        const itemLink = await item
+          .$("a._3TqU78D")
+          .then((elem) => elem.getProperty("href"))
+          .then((handle) => handle.jsonValue());
         allItemsFormatted.push({
           storeName: "Asos",
-          linkToBuy:itemLink,
+          linkToBuy: itemLink,
         });
       }
     }
