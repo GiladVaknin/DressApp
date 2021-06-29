@@ -25,14 +25,14 @@ async function getPreview(linkToBuy) {
     .then((elem) => elem.getProperty("innerText"))
     .then(async (handle) => {
       const priceBeforeDiscount = await handle.jsonValue();
-      return Number(priceBeforeDiscount.replace("ILS", "")) ;
+      return Number(priceBeforeDiscount.replace("ILS", ""));
     });
   item.discountPercent = await page
     .$(`span [class="product-discount-percent"]`)
     .then((elem) => elem.getProperty("innerText"))
     .then(async (handle) => {
       const priceBeforeDiscount = await handle.jsonValue();
-      return Number(priceBeforeDiscount.replace(/[()\-%]/g,""));
+      return Number(priceBeforeDiscount.replace(/[()\-%]/g, ""));
     });
 
   item.price = await page
@@ -44,19 +44,18 @@ async function getPreview(linkToBuy) {
     });
 
   item.linkToBuy = linkToBuy;
-  item.rank=await page.$(`div[class="numeric-rating"]`)
-  .then((elem) =>{
-    if(!elem)return null
-     return elem.getProperty("innerText")
-     .then(handle=>handle.jsonValue());
-  })
- 
+  item.rank = await page.$(`div[class="numeric-rating"]`).then((elem) => {
+    if (!elem) return null;
+    return elem.getProperty("innerText").then((handle) => handle.jsonValue());
+  });
 
-  item.imgSrc= await page.$(`div[class="fullImageContainer"] img`)
-  .then((image)=>image.getProperty('src')).then(handle=>handle.jsonValue());
+  item.imgSrc = await page
+    .$(`div[class="fullImageContainer"] img`)
+    .then((image) => image.getProperty("src"))
+    .then((handle) => handle.jsonValue());
   console.log(item);
   await browser.close();
   return item;
 }
 
-module.exports=getPreview;
+module.exports = getPreview;

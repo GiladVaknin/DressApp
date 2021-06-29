@@ -20,6 +20,7 @@ app.get("/api/filter", async (req, res) => {
 
 app.get("/api/preview", async (req, res) => {
   const { storeName, linkToBuy } = req.body.query;
+  console.log(storeName);
   const preview = await previews[storeName](linkToBuy);
   res.json(preview);
 });
