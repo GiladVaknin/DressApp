@@ -17,17 +17,15 @@ async function main(product) {
     });
 
     const page = await browser.newPage();
+    await page.setUserAgent(
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+    );
 
     await page.goto(BASE_URL + "/" + product.gender, {
       waitUntil: "networkidle2",
     });
-    const inner_html = await page.$eval("body", (element) => element.innerHTML);
-    console.log(inner_html);
-    // await page.waitForSelector('button[aria-label="Open navigation menu"]');
     const menu = await page.$('button[aria-label="Open navigation menu"]');
     await menu.click();
-    console.log("NAVIGATINMENU");
-
     const [category] = await page.$x(
       `//button[contains(., '${product.category}')]`
     );
@@ -35,8 +33,6 @@ async function main(product) {
     if (category) {
       await category.click();
     }
-
-    console.log("NAVIGATINMENU");
     const [productType] = await page.$x(
       `//a[contains(., '${product.productType}')]`
     );

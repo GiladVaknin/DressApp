@@ -2,12 +2,14 @@ const express = require("express");
 const sheinScraper = require("./shein");
 const asosScraper = require("./asos");
 const previews = require("./previews");
+const cors = require("cors");
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
-app.get("/api/filter", async (req, res) => {
+app.post("/api/filter", async (req, res) => {
   const { query } = req.body;
 
   const sheinList = sheinScraper(query);
@@ -18,7 +20,7 @@ app.get("/api/filter", async (req, res) => {
   res.json(shuffleResults(allResults));
 });
 
-app.get("/api/preview", async (req, res) => {
+app.post("/api/preview", async (req, res) => {
   const { storeName, linkToBuy } = req.body.query;
   console.log(storeName);
   const preview = await previews[storeName](linkToBuy);

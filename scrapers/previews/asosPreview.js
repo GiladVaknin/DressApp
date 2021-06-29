@@ -10,13 +10,14 @@ async function getPreview(linkToBuy) {
   });
 
   const page = await browser.newPage();
+  await page.setUserAgent(
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+  );
 
-  await page.goto(linkToBuy, {
-    waitUntil: "networkidle2",
-  });
+  await page.goto(linkToBuy, { waitUntil: "networkidle2" });
 
   item.title = await page
-    .$("div .product-hero h1")
+    .$("div.product-hero h1")
     .then((elem) => elem.getProperty("innerText"))
     .then((handle) => handle.jsonValue());
 
