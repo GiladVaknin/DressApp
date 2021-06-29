@@ -1,5 +1,4 @@
 const puppeteer = require("puppeteer");
-const request = require("request");
 require("dotenv").config();
 
 module.exports = shain;

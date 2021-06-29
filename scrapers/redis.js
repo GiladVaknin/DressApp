@@ -17,14 +17,12 @@ async function signCache(query, results) {
     query.sizes = query.sizes.sort(); //alphabetic order-to avoid duplicates
   }
   hash(JSON.stringify(query), HASH_SALT, (err, hashed) => {
-    console.log(hashed, results);
-    redis.set(hashed, results);
+    redis.set(hashed, JSON.stringify(results));
   });
 }
 
 async function getCached(query) {
   const hashedQuery = await hash(JSON.stringify(query), HASH_SALT);
-  console.log(hashedQuery);
-  return redisLike[hashedQuery];
+  return redis.get(hashedQuery).then(JSON.parse);
 }
 module.exports = { signCache, getCached };

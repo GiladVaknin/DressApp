@@ -3,6 +3,7 @@ const sheinScraper = require("./shein");
 const asosScraper = require("./asos");
 const previews = require("./previews");
 const cors = require("cors");
+const { signCache, getCached } = require("./redis.js");
 
 const app = express();
 
@@ -11,13 +12,26 @@ app.use(cors());
 
 app.post("/api/filter", async (req, res) => {
   const { query } = req.body;
+  let aborted = false;
+
+  getCached(query).then((results) => {
+    if (results) {
+      aborted = true;
+      res.json(results);
+    }
+  });
 
   const sheinList = sheinScraper(query);
   const asosList = asosScraper(query);
 
-  const allResults = await Promise.all([asosList, sheinList]).catch(res.json);
+  const allResults = await Promise.all([asosList, sheinList])
+    .then(shuffleResults)
+    .catch(res.json);
 
-  res.json(shuffleResults(allResults));
+  if (!aborted) {
+    res.json(allResults);
+    signCache(query, allResults);
+  }
 });
 
 app.post("/api/preview", async (req, res) => {

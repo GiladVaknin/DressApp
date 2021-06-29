@@ -1,7 +1,6 @@
 const puppeteer = require("puppeteer");
 const BASE_URL = "https://www.asos.com";
 const axios = require("axios");
-const cheerio = require("cheerio");
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
@@ -73,7 +72,6 @@ async function main(product) {
 
     if (items) {
       for (item of items) {
-        await item.evaluate((node) => node.scrollIntoView());
         const itemLink = await item
           .$("a._3TqU78D")
           .then((elem) => elem.getProperty("href"))
