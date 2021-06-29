@@ -36,9 +36,20 @@ app.post("/api/filter", async (req, res) => {
 
 app.post("/api/preview", async (req, res) => {
   const { storeName, linkToBuy } = req.body.query;
-  console.log(storeName);
-  const preview = await previews[storeName](linkToBuy);
-  res.json(preview);
+  let aborted = false;
+
+  await getCached({ linkToBuy }).then((results) => {
+    if (results) {
+      aborted = true;
+      res.json(results);
+    }
+  });
+
+  if (!aborted) {
+    const preview = await previews[storeName](linkToBuy);
+    res.json(preview);
+    signCache({ linkToBuy }, preview);
+  }
 });
 
 const { PORT } = process.env;
