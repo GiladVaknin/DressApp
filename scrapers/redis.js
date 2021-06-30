@@ -5,6 +5,7 @@ const { HASH_SALT } = process.env;
 const redis = new Redis({
   port: 6379,
   host: "redis",
+  password: "123456789",
   db: 0,
 });
 
@@ -31,3 +32,7 @@ async function getCached(query) {
   return redis.get(hashedQuery).then(JSON.parse);
 }
 module.exports = { signCache, getCached };
+
+async function getRecent(limit) {
+  redis.scan();
+}
