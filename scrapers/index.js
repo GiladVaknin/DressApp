@@ -3,7 +3,7 @@ const sheinScraper = require("./shein");
 const asosScraper = require("./asos");
 const previews = require("./previews");
 const cors = require("cors");
-const { signCache, getCached } = require("./redis.js");
+const { signCache, getCached, getRecent } = require("./redis.js");
 
 const app = express();
 
@@ -50,6 +50,10 @@ app.post("/api/preview", async (req, res) => {
     res.json(preview);
     signCache({ linkToBuy }, preview);
   }
+});
+
+app.get("/api/recent", (req, res) => {
+  getRecent().then((result) => res.json(result ? result : { e: "error" }));
 });
 
 const { PORT } = process.env;

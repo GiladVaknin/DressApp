@@ -31,8 +31,22 @@ async function getCached(query) {
   const hashedQuery = await hash(JSON.stringify(query), HASH_SALT);
   return redis.get(hashedQuery).then(JSON.parse);
 }
-module.exports = { signCache, getCached };
 
 async function getRecent(limit) {
-  redis.scan();
+  const promises = redis.scan(0).then((keys) => {
+    keys.map((key) => redis.get(key));
+  });
+  return Promise.allSettled(promises).then((promArr) => {
+    return promArr
+      .map((promise) => {
+        if (promise.status === "fulfilled") {
+          return promise.value;
+        } else {
+          return null;
+        }
+      })
+      .filter((val) => val)
+      .flat();
+  });
 }
+module.exports = { signCache, getCached, getRecent };

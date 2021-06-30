@@ -17,7 +17,6 @@ services:
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
 
     command: redis-server --requirepass "123456789"
-
     volumes:
       - "redis_data:/bitnami/redis/data"
 
