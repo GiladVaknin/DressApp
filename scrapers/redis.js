@@ -1,6 +1,7 @@
 const Redis = require("ioredis");
 const { hash } = require("bcrypt");
 const { HASH_SALT } = process.env;
+
 const redis = new Redis({
   port: 6379,
   host: "redis",
@@ -15,11 +16,17 @@ async function signCache(query, results) {
     query.sizes = query.sizes.sort(); //alphabetic order-to avoid duplicates
   }
   hash(JSON.stringify(query), HASH_SALT, (err, hashed) => {
-    redis.set(hashed, JSON.stringify(results), "EX", 86400); //24 hours
+    redis.set(hashed, JSON.stringify(results), "EX", 43200); //12 hours
   });
 }
 
 async function getCached(query) {
+  if (query.colors?.length) {
+    query.colors = query.colors.sort(); //alphabetic order-to avoid duplicates
+  }
+  if (query.sizes?.length) {
+    query.sizes = query.sizes.sort(); //alphabetic order-to avoid duplicates
+  }
   const hashedQuery = await hash(JSON.stringify(query), HASH_SALT);
   return redis.get(hashedQuery).then(JSON.parse);
 }

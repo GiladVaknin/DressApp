@@ -84,6 +84,9 @@ async function main(product) {
     }
 
     await browser.close();
+    const abort = () => {
+      browser.close();
+    };
     return allItemsFormatted;
   } catch (err) {
     console.log(
