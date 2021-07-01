@@ -26,7 +26,7 @@ app.post("/api/filter", async (req, res) => {
 
   const allResults = await Promise.all([asosList, sheinList])
     .then(shuffleResults)
-    .catch(res.json);
+    .catch((e) => console.log(e));
 
   if (!aborted) {
     res.json(allResults);
@@ -69,28 +69,4 @@ function shuffleResults(allResults) {
       if (allResults[j][i]) output.push(allResults[j][i]);
     }
   return output;
-}
-
-function translator(query) {
-  switch (query.type) {
-    case "Hoodies & Sweatshirts":
-      query.type = "Sweatshirts";
-      break;
-
-    case "Lingerie & Nightwear":
-      query.type = "Sexy Lingerie";
-      break;
-
-    case "Swimwear & Beachwear":
-      query.type = "Beachwear";
-      break;
-  }
-}
-
-function colorTranslator(colors) {
-  colors.forEach((color) => {
-    if (sheinColors.include(color)) return color;
-    else {
-    }
-  });
 }

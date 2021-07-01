@@ -12,6 +12,7 @@
     "puppeteer": "^10.0.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon . && docker run -p 6379:6379 docker.io/bitnami/redis:6.2 redis-server --requirepass \"123456789\""
   }
 }

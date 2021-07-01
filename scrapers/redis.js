@@ -1,10 +1,10 @@
 const Redis = require("ioredis");
 const { hash } = require("bcrypt");
-const { HASH_SALT } = process.env;
+const { HASH_SALT, REDIS_HOST } = process.env;
 
 const redis = new Redis({
   port: 6379,
-  host: "redis",
+  host: REDIS_HOST || "redis",
   password: "123456789",
   db: 0,
 });
@@ -33,9 +33,13 @@ async function getCached(query) {
 }
 
 async function getRecent(limit) {
-  const promises = redis.scan(0).then((keys) => {
-    keys.map((key) => redis.get(key));
-  });
+  const promises = await redis.scan(0);
+  //   .then((keys) => {
+  //     keys.map((key) => redis.get(key));
+  //   });
+
+  console.log(promises);
+
   return Promise.allSettled(promises).then((promArr) => {
     return promArr
       .map((promise) => {

@@ -4,7 +4,6 @@ require("dotenv").config();
 module.exports = shain;
 async function shain({
   gender = "",
-  category = "",
   productType = "",
   colors = [],
   sizes = [],
@@ -12,12 +11,15 @@ async function shain({
   const TRANSLATIONS = {
     Navy: "Blue",
     Shirts: "Tops",
+    "Hoodies & Sweatshirts": "Sweatshirts",
+    "Lingerie & Nightwear": "Sexy Lingerie",
+    "Swimwear & Beachwear": "Beachwear",
   };
   const headless = process.env.headless || false;
   const browser = await puppeteer.launch({
     headless,
     // slowMo: 50,
-    defaultViewport: { width: 3000, height: 2000 },
+    defaultViewport: { width: 2000, height: 1500 },
   });
   const page = await browser.newPage();
   const finalURL = "https://il.shein.com/" + gender;
@@ -26,12 +28,14 @@ async function shain({
   const bannerCloseButton = await page.$("i.svgicon-close");
   bannerCloseButton && (await bannerCloseButton.click());
 
+  const clothing = await page.$(`a[title="CLOTHING"`);
+  await clothing.hover();
+
   const searchType = TRANSLATIONS[productType] || productType;
-  await page.waitForSelector(".header-v2__nav2");
-  const categoryMenu = await page.$(".header-v2__nav2");
-  const categoryButton = await categoryMenu.$(
-    `a[title="${searchType.toUpperCase()}"]`
-  );
+  await page.waitForSelector("nav.header-float");
+  const categoryMenu = await page.$("nav.header-float");
+  const categoryButton = await categoryMenu.$(`a[title="${searchType}"]`);
+
   await categoryButton.evaluate(async (e) => await e.click());
 
   if (colors.length) {
