@@ -57,7 +57,6 @@ function FilterMenu(props) {
     "Jeans",
     "Shorts",
     "Activewear",
-    "Designer",
     "Hoodies & Sweatshirts",
     "Coats & Jackets",
     "Jumpers & Cardigans",

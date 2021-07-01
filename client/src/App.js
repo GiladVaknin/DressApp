@@ -59,6 +59,7 @@ function App() {
   }, []);
 
   function getItems(query) {
+    console.log(query);
     return axios({
       method: "POST",
       url: "http://localhost:8080/api/filter",

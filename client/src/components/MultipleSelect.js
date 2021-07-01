@@ -53,7 +53,6 @@ const MultipleSelect = forwardRef((props, ref) => {
   const handleChange = (event) => {
     ref.current[props.selectName.toLowerCase() + "s"] = event.target.value;
     setChoosen(event.target.value);
-    console.log(ref.current);
   };
 
   return (

@@ -70,3 +70,27 @@ function shuffleResults(allResults) {
     }
   return output;
 }
+
+function translator(query) {
+  switch (query.type) {
+    case "Hoodies & Sweatshirts":
+      query.type = "Sweatshirts";
+      break;
+
+    case "Lingerie & Nightwear":
+      query.type = "Sexy Lingerie";
+      break;
+
+    case "Swimwear & Beachwear":
+      query.type = "Beachwear";
+      break;
+  }
+}
+
+function colorTranslator(colors) {
+  colors.forEach((color) => {
+    if (sheinColors.include(color)) return color;
+    else {
+    }
+  });
+}
