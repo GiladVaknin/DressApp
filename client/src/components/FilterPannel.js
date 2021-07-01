@@ -92,13 +92,15 @@ function FilterMenu(props) {
       <MultipleSelect ref={query} selectName="SIZE" options={sizes} />
       <MultipleSelect ref={query} selectName="COLOR" options={colors} />
       <button
-        onClick={getItems({
-          gender: query.current.gender,
-          category: "Clothing",
-          productType: query.current.type,
-          colors: query.current.colors,
-          sizes: query.current.sizes,
-        })}
+        onClick={() =>
+          getItems({
+            gender: query.current.gender,
+            category: "Clothing",
+            productType: query.current.type,
+            colors: query.current.colors,
+            sizes: query.current.sizes,
+          })
+        }
       >
         Search
       </button>
