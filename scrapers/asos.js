@@ -28,17 +28,13 @@ async function main(product) {
     const [category] = await page.$x(
       `//button[contains(., '${product.category}')]`
     );
+    category && (await category.click());
 
-    if (category) {
-      await category.click();
-    }
-    const [productType] = await page.$x(
-      `//a[contains(., '${product.productType}')]`
-    );
+    await page.waitForSelector("._1yLqhTn");
+    const openMenu = await page.$("._2gD1b3A");
+    const productType = await openMenu.$(`div[title='${product.productType}']`);
 
-    if (productType) {
-      await productType.evaluate((e) => e.click());
-    }
+    productType && (await productType.evaluate((e) => e.click()));
 
     await page.waitForNavigation();
     const [colour] = await page.$x(`//button[contains(., 'Colour')]`);
@@ -84,15 +80,9 @@ async function main(product) {
     }
 
     await browser.close();
-    const abort = () => {
-      browser.close();
-    };
     return allItemsFormatted;
   } catch (err) {
-    console.log(
-      "MAINERR!!!!!!!!!!!!!!!! =================================================== \n " +
-        err
-    );
+    console.log(err);
   }
 }
 
