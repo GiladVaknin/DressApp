@@ -9,11 +9,33 @@ async function shain({
   sizes = [],
 }) {
   const TRANSLATIONS = {
-    Navy: "Blue",
-    Shirts: "Tops",
-    "Hoodies & Sweatshirts": "Sweatshirts",
-    "Lingerie & Nightwear": "Sexy Lingerie",
-    "Swimwear & Beachwear": "Beachwear",
+    men: {
+      "Hoodies & Sweatshirts": "HOODIES & SWEATSHIRTS",
+      "Co-ords": "TWO-PIECE SETS",
+      Shorts: "Denim Shorts",
+      Swimwear: "SWIMWEAR",
+      "Polo shirts": "Polo",
+      Activewear: "ACTIVEWEAR",
+      Designer: "OUTERWEAR",
+      "Jackets & Coats": "Coats & Jackets",
+      Joggers: "Sweatpants",
+      "Jumpers & Cardigans": "KNITWEAR",
+      Multipacks: "MATCHING SETS",
+    },
+    women: {
+      "Co-ords": "TWO-PIECE SETS",
+      Activewear: "ACTIVEWEAR",
+      "Hoodies & Sweatshirts": "SWEATSHIRTS",
+      "Coats & Jackets": "COATS & JACKETS",
+      "Jumpers & Cardigans": "SWEATERS",
+      "Lingerie & Nightwear": "LINGERIE",
+      "Swimwear & Beachwear": "BEACHWEAR",
+      Tops: "TOPS",
+    },
+    colors: {
+      Navy: "Blue",
+      Neutral: "Khaki",
+    },
   };
   const headless = process.env.headless || false;
   const browser = await puppeteer.launch({
@@ -31,10 +53,9 @@ async function shain({
   const clothing = await page.$(`a[title="CLOTHING"`);
   await clothing.hover();
 
-  const searchType = TRANSLATIONS[productType] || productType;
-  await page.waitForSelector("nav.header-float");
-  const categoryMenu = await page.$("nav.header-float");
-  const categoryButton = await categoryMenu.$(`a[title="${searchType}"]`);
+  const searchType = TRANSLATIONS[gender][productType] || productType;
+  await page.waitForSelector(".header-float__txt");
+  const categoryButton = await page.$(`a[title="${searchType}"]`);
 
   await categoryButton.evaluate(async (e) => await e.click());
 
@@ -52,17 +73,16 @@ async function shain({
         await page.click(`div[aria-label="Color"]`);
       }
 
-      const searchColor = TRANSLATIONS[color] || color;
+      const searchColor = TRANSLATIONS.colors[color] || color;
 
       await page.waitForSelector(`img[title="${searchColor}"]`);
       const colorButton = await colorMenu.$(`img[title="${searchColor}"]`);
-      await colorButton.evaluate(async (e) => await e.click());
+      colorButton && (await colorButton.evaluate(async (e) => await e.click()));
     }
   }
 
   if (sizes.length) {
     for (size of sizes) {
-      await page.waitForNavigation();
       await page.waitForSelector(`div[aria-label="Size"]`);
       const sizeMenu = await page.$(`div[aria-label="Size"]`);
       const isOpen = await sizeMenu.evaluate((node) =>
@@ -76,9 +96,9 @@ async function shain({
       const viewMore = await sizeMenu.$(".side-filter__item-viewMore");
       viewMore && (await viewMore.click());
 
-      await page.waitForSelector(`input[value="${size}"]`);
+      await page.waitForSelector(`div.side-filter__item-content-each`);
       const sizeButton = await sizeMenu.$(`input[value="${size}"]`);
-      await sizeButton.evaluate(async (e) => await e.click());
+      sizeButton && (await sizeButton.evaluate(async (e) => await e.click()));
     }
   }
 

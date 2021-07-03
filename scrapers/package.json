@@ -13,6 +13,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon . && docker run -p 6379:6379 docker.io/bitnami/redis:6.2 redis-server --requirepass \"123456789\""
+    "dev": "nodemon . ",
+    "redis": "docker run -p 6379:6379 -v :/bitnami/redis/data docker.io/bitnami/redis:6.2 redis-server --requirepass 123456789"
   }
 }

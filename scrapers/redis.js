@@ -10,25 +10,20 @@ const redis = new Redis({
 });
 
 async function signCache(query, results) {
-  if (query.colors?.length) {
-    query.colors = query.colors.sort(); //alphabetic order-to avoid duplicates
-  }
-  if (query.sizes?.length) {
-    query.sizes = query.sizes.sort(); //alphabetic order-to avoid duplicates
-  }
-  hash(JSON.stringify(query), HASH_SALT, (err, hashed) => {
+  if (!results.length) return; // if there was an error, dont save
+  if (query.colors?.length) query.colors = query.colors.sort(); //alphabetic order-to avoid duplicates
+  if (query.sizes?.length) query.sizes = query.sizes.sort(); //alphabetic order-to avoid duplicates
+
+  hash(stringify(query), HASH_SALT, (err, hashed) => {
     redis.set(hashed, JSON.stringify(results), "EX", 43200); //12 hours
   });
 }
 
 async function getCached(query) {
-  if (query.colors?.length) {
-    query.colors = query.colors.sort(); //alphabetic order-to avoid duplicates
-  }
-  if (query.sizes?.length) {
-    query.sizes = query.sizes.sort(); //alphabetic order-to avoid duplicates
-  }
-  const hashedQuery = await hash(JSON.stringify(query), HASH_SALT);
+  if (query.colors?.length) query.colors = query.colors.sort(); //alphabetic order-to avoid duplicates
+  if (query.sizes?.length) query.sizes = query.sizes.sort(); //alphabetic order-to avoid duplicates
+
+  const hashedQuery = await hash(stringify(query), HASH_SALT);
   return redis.get(hashedQuery).then(JSON.parse);
 }
 
@@ -54,3 +49,14 @@ async function getRecent(limit) {
   });
 }
 module.exports = { signCache, getCached, getRecent };
+
+function stringify(query) {
+  let string = "";
+  for (prop in query) {
+    if (typeof query[prop] === "string") string += query[prop];
+    else {
+      query[prop].forEach((val) => (string += val));
+    }
+  }
+  return string;
+}

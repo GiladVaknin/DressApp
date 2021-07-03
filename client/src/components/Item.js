@@ -24,7 +24,6 @@ function Item(props) {
     if (item.prevPrice > 0)
       return (
         <>
-          {" "}
           <h3>{item.prevPrice} ILS</h3>
           <h3>-{item.discountPercent} %</h3>
         </>

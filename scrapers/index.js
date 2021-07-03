@@ -12,14 +12,9 @@ app.use(cors());
 
 app.post("/api/filter", async (req, res) => {
   const { query } = req.body;
-  let aborted = false;
 
-  getCached(query).then((results) => {
-    if (results) {
-      aborted = true;
-      res.json(results);
-    }
-  });
+  const cached = await getCached(query);
+  if (cached) return res.json(cached);
 
   const sheinList = sheinScraper(query);
   const asosList = asosScraper(query);
@@ -28,10 +23,8 @@ app.post("/api/filter", async (req, res) => {
     .then(shuffleResults)
     .catch((e) => console.log(e));
 
-  if (!aborted) {
-    res.json(allResults);
-    signCache(query, allResults);
-  }
+  res.json(allResults);
+  signCache(query, allResults);
 });
 
 app.post("/api/preview", async (req, res) => {
