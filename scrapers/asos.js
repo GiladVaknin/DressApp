@@ -64,23 +64,24 @@ async function main(product) {
     }
 
     const items = await page.$$("._2qG85dG");
-    const allItemsFormatted = [];
 
-    if (items) {
-      for (item of items) {
+    const allItemsFormatted = await Promise.all(
+      items.map(async (item) => {
         const itemLink = await item
           .$("a._3TqU78D")
           .then((elem) => elem.getProperty("href"))
-          .then((handle) => handle.jsonValue());
-        allItemsFormatted.push({
+          .then((handle) => handle.jsonValue())
+          .catch(console.log);
+
+        return {
           storeName: "Asos",
           linkToBuy: itemLink,
-        });
-      }
-    }
+        };
+      })
+    );
 
     await browser.close();
-    return allItemsFormatted;
+    return allItemsFormatted.filter((val) => val);
   } catch (err) {
     console.log(err);
   }
