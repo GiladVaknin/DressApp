@@ -38,11 +38,14 @@ app.post("/api/preview", async (req, res) => {
 
 app.post("/api/cachepreviews", (req, res) => {
   const { query } = req.body;
+  const promises = [];
   for (const item of query) {
-    previews[item.storeName](item.linkToBuy).then((preview) =>
+    const preview = previews[item.storeName](item.linkToBuy).then((preview) =>
       signCache(item, preview, "previews")
     );
+    promises.push(preview);
   }
+  Promise.allSettled(promises).then(() => res.send("OK"));
 });
 
 app.get("/api/recent", (req, res) => {

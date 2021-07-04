@@ -54,7 +54,6 @@ async function getPreview(linkToBuy) {
     .$(`div[class="fullImageContainer"] img`)
     .then((image) => image.getProperty("src"))
     .then((handle) => handle.jsonValue());
-  console.log(item);
   await browser.close();
   return item;
 }
