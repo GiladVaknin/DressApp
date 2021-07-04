@@ -5,7 +5,7 @@ function Item(props) {
   const [item, setItem] = useState(null);
 
   useEffect(() => {
-    getPreview(props.item).then(setItem);
+    getPreview(props.item).then((res) => setItem(res));
   }, [props.item]);
 
   function getPreview(item) {

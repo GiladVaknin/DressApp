@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import Item from "./components/Item";
 import FilterPannel from "./components/FilterPannel";
@@ -42,24 +41,18 @@ function App() {
 
   const [items, setItems] = useState(exc);
 
-  const i = {
-    storeName: "Asos",
-    linkToBuy:
-      "https://www.asos.com/south-beach/south-beach-scrunch-exaggerated-bikini-set-in-orange/grp/203937?colourwayid=60424450&cid=27428#22770569",
-  };
-
-  useEffect(() => {
-    getItems({
-      gender: "women",
-      category: "Clothing",
-      productType: "Tops",
-      colors: ["Black"],
-      sizes: ["S"],
-    }).then(setItems);
-  }, []);
+  // useEffect(() => {
+  //   getItems({
+  //     gender: "women",
+  //     category: "Clothing",
+  //     productType: "Tops",
+  //     colors: ["Black"],
+  //     sizes: ["S"],
+  //   }).then((res) => setItems(res.data));
+  // }, []);
 
   function getItems(query) {
-    console.log(query);
+    console.log(items);
     return axios({
       method: "POST",
       url: "http://localhost:8080/api/filter",
@@ -67,17 +60,21 @@ function App() {
         query: query,
       },
     })
-      .then(console.log)
+      .then((res) => {
+        console.log(res);
+        setItems(res.data);
+      })
       .catch(console.log);
   }
 
   return (
     <div className="App">
       <h1>DressApp</h1>
+      {/* <Item item={items[0]} /> */}
       <FilterPannel getItems={getItems} />
-      {/* {items.map((item) => {
+      {items.map((item) => {
         return <Item item={item} />;
-      })} */}
+      })}
       {/* <Item item={i} /> */}
     </div>
   );
