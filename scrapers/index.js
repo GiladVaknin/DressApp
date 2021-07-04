@@ -14,7 +14,7 @@ app.use(cors());
 app.post("/api/filter", async (req, res) => {
   const { query } = req.body;
 
-  const cached = await getCached(query);
+  const cached = await getCached(query, "items");
   if (cached) return res.json(cached);
 
   // const sheinList = sheinScraper(query);
@@ -26,17 +26,17 @@ app.post("/api/filter", async (req, res) => {
     .catch((e) => console.log(e));
 
   res.json(allResults);
-  signCache(query, allResults);
+  signCache(query, allResults, "items");
 });
 
 app.post("/api/preview", async (req, res) => {
   const { storeName, linkToBuy } = req.body.query;
-  const cached = await getCached(req.body.query);
+  const cached = await getCached(req.body.query, "previews");
   if (cached) return res.json(cached);
 
   const preview = await previews[storeName](linkToBuy);
   res.json(preview);
-  signCache(req.body.query, preview, true);
+  signCache(req.body.query, preview, "previews");
 });
 
 app.get("/api/recent", (req, res) => {
