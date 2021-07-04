@@ -36,7 +36,7 @@ async function main(product) {
 
     productType && (await productType.evaluate((e) => e.click()));
 
-    await page.waitForNavigation();
+    await page.waitForXPath(`//button[contains(., 'Colour')]`);
     const [colour] = await page.$x(`//button[contains(., 'Colour')]`);
 
     if (colour) {

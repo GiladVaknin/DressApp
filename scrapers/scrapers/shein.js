@@ -61,8 +61,7 @@ async function shain({
 
   if (colors.length) {
     for (color of colors) {
-      await page.waitForNavigation();
-      await page.waitForSelector(`div[aria-label="Color"]`);
+      await page.waitForSelector(`div[aria-label="Color"]`, { visible: true });
       const colorMenu = await page.$(`div[aria-label="Color"]`);
       const isOpen = await colorMenu.evaluate((node) =>
         node.getAttribute("aria-expanded")
