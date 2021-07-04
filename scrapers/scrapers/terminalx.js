@@ -15,7 +15,7 @@ const TRANSLATIONS = {
     "Hoodies & Sweatshirts": "סוודרים וסווטשירטים",
     "Jackets & Coats": "ג'קטים ומעילים",
     Joggers: "מכנסי טרנינג",
-    "Jumpers & Cardigans": "קרדדיגנים",
+    "Jumpers & Cardigans": "קרדיגנים",
     Underwear: "תחתונים",
     Multipacks: "none",
   },
@@ -69,6 +69,9 @@ async function main({
     defaultViewport: { width: 1600, height: 1000 },
   });
   const page = await browser.newPage();
+  await page.setUserAgent(
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+  );
   const finalURL = "https://www.terminalx.com/";
   await page.goto(finalURL);
   const genderSearch = TRANSLATIONS.genders[gender];

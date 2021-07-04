@@ -6,19 +6,19 @@ const { JSDOM } = jsdom;
 
 async function main(product) {
   const headless = process.env.headless || false;
+  const browser = await puppeteer.launch({
+    headless,
+    slowMo: 50,
+    defaultViewport: { width: 770, height: 1024 },
+    timeout: 500000,
+  });
 
+  const page = await browser.newPage();
   try {
-    const browser = await puppeteer.launch({
-      headless,
-      slowMo: 50,
-      defaultViewport: { width: 770, height: 1024 },
-      timeout: 500000,
-    });
-
-    const page = await browser.newPage();
     await page.setUserAgent(
       "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
     );
+    await page.setViewport({ width: 770, height: 1024 });
 
     await page.goto(BASE_URL + "/" + product.gender, {
       waitUntil: "networkidle2",
@@ -84,6 +84,7 @@ async function main(product) {
     return allItemsFormatted.filter((val) => val);
   } catch (err) {
     console.log(err);
+    browser.close();
   }
 }
 

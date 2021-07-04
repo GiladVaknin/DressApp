@@ -1,6 +1,35 @@
 const puppeteer = require("puppeteer");
 require("dotenv").config();
 
+const TRANSLATIONS = {
+  men: {
+    "Hoodies & Sweatshirts": "HOODIES & SWEATSHIRTS",
+    "Co-ords": "TWO-PIECE SETS",
+    Shorts: "Denim Shorts",
+    Swimwear: "SWIMWEAR",
+    "Polo shirts": "Polo",
+    Activewear: "ACTIVEWEAR",
+    Designer: "OUTERWEAR",
+    "Jackets & Coats": "Coats & Jackets",
+    Joggers: "Sweatpants",
+    "Jumpers & Cardigans": "KNITWEAR",
+    Multipacks: "MATCHING SETS",
+  },
+  women: {
+    "Co-ords": "TWO-PIECE SETS",
+    Activewear: "ACTIVEWEAR",
+    "Hoodies & Sweatshirts": "SWEATSHIRTS",
+    "Coats & Jackets": "COATS & JACKETS",
+    "Jumpers & Cardigans": "SWEATERS",
+    "Lingerie & Nightwear": "LINGERIE",
+    "Swimwear & Beachwear": "BEACHWEAR",
+    Tops: "TOPS",
+  },
+  colors: {
+    Navy: "Blue",
+    Neutral: "Khaki",
+  },
+};
 module.exports = shain;
 async function shain({
   gender = "",
@@ -8,35 +37,6 @@ async function shain({
   colors = [],
   sizes = [],
 }) {
-  const TRANSLATIONS = {
-    men: {
-      "Hoodies & Sweatshirts": "HOODIES & SWEATSHIRTS",
-      "Co-ords": "TWO-PIECE SETS",
-      Shorts: "Denim Shorts",
-      Swimwear: "SWIMWEAR",
-      "Polo shirts": "Polo",
-      Activewear: "ACTIVEWEAR",
-      Designer: "OUTERWEAR",
-      "Jackets & Coats": "Coats & Jackets",
-      Joggers: "Sweatpants",
-      "Jumpers & Cardigans": "KNITWEAR",
-      Multipacks: "MATCHING SETS",
-    },
-    women: {
-      "Co-ords": "TWO-PIECE SETS",
-      Activewear: "ACTIVEWEAR",
-      "Hoodies & Sweatshirts": "SWEATSHIRTS",
-      "Coats & Jackets": "COATS & JACKETS",
-      "Jumpers & Cardigans": "SWEATERS",
-      "Lingerie & Nightwear": "LINGERIE",
-      "Swimwear & Beachwear": "BEACHWEAR",
-      Tops: "TOPS",
-    },
-    colors: {
-      Navy: "Blue",
-      Neutral: "Khaki",
-    },
-  };
   const headless = process.env.headless || false;
   const browser = await puppeteer.launch({
     headless,
@@ -44,70 +44,81 @@ async function shain({
     defaultViewport: { width: 2000, height: 1500 },
   });
   const page = await browser.newPage();
-  const finalURL = "https://il.shein.com/" + gender;
-  await page.goto(finalURL);
+  try {
+    await page.setViewport({ width: 2000, height: 1500 });
 
-  const bannerCloseButton = await page.$("i.svgicon-close");
-  bannerCloseButton && (await bannerCloseButton.click());
+    const finalURL = "https://il.shein.com/" + gender;
+    await page.goto(finalURL);
 
-  const clothing = await page.$(`a[title="CLOTHING"`);
-  await clothing.hover();
+    const bannerCloseButton = await page.$("i.svgicon-close");
+    bannerCloseButton && (await bannerCloseButton.click());
 
-  const searchType = TRANSLATIONS[gender][productType] || productType;
-  await page.waitForSelector(".header-float__txt");
-  const categoryButton = await page.$(`a[title="${searchType}"]`);
+    const clothing = await page.$(`a[title="CLOTHING"`);
+    await clothing.hover();
 
-  await categoryButton.evaluate(async (e) => await e.click());
+    const searchType = TRANSLATIONS[gender][productType] || productType;
+    await page.waitForSelector(".header-float__txt");
+    const categoryButton = await page.$(`a[title="${searchType}"]`);
 
-  if (colors.length) {
-    for (color of colors) {
-      await page.waitForSelector(`div[aria-label="Color"]`, { visible: true });
-      const colorMenu = await page.$(`div[aria-label="Color"]`);
-      const isOpen = await colorMenu.evaluate((node) =>
-        node.getAttribute("aria-expanded")
-      );
+    await categoryButton.evaluate(async (e) => await e.click());
 
-      if (!isOpen) {
-        await colorMenu.evaluate((node) => node.scrollIntoView());
-        await page.click(`div[aria-label="Color"]`);
+    if (colors.length) {
+      for (color of colors) {
+        await page.waitForSelector(`div[aria-label="Color"]`, {
+          visible: true,
+        });
+        const colorMenu = await page.$(`div[aria-label="Color"]`);
+        const isOpen = await colorMenu.evaluate((node) =>
+          node.getAttribute("aria-expanded")
+        );
+
+        if (!isOpen) {
+          await colorMenu.evaluate((node) => node.scrollIntoView());
+          await page.click(`div[aria-label="Color"]`);
+        }
+
+        const searchColor = TRANSLATIONS.colors[color] || color;
+
+        await page.waitForSelector(`img[title="${searchColor}"]`);
+        const colorButton = await colorMenu.$(`img[title="${searchColor}"]`);
+        colorButton &&
+          (await colorButton.evaluate(async (e) => await e.click()));
       }
-
-      const searchColor = TRANSLATIONS.colors[color] || color;
-
-      await page.waitForSelector(`img[title="${searchColor}"]`);
-      const colorButton = await colorMenu.$(`img[title="${searchColor}"]`);
-      colorButton && (await colorButton.evaluate(async (e) => await e.click()));
     }
-  }
 
-  if (sizes.length) {
-    for (size of sizes) {
-      await page.waitForSelector(`div[aria-label="Size"]`);
-      const sizeMenu = await page.$(`div[aria-label="Size"]`);
-      const isOpen = await sizeMenu.evaluate((node) =>
-        node.getAttribute("aria-expanded")
-      );
+    if (sizes.length) {
+      for (size of sizes) {
+        await page.waitForSelector(`div[aria-label="Size"]`);
+        const sizeMenu = await page.$(`div[aria-label="Size"]`);
+        const isOpen = await sizeMenu.evaluate((node) =>
+          node.getAttribute("aria-expanded")
+        );
 
-      if (!isOpen) {
-        await sizeMenu.evaluate((node) => node.scrollIntoView());
-        await page.click(`div[aria-label="Size"]`);
+        if (!isOpen) {
+          await sizeMenu.evaluate((node) => node.scrollIntoView());
+          await page.click(`div[aria-label="Size"]`);
+        }
+        const viewMore = await sizeMenu.$(".side-filter__item-viewMore");
+        viewMore && (await viewMore.click());
+
+        await page.waitForSelector(`div.side-filter__item-content-each`);
+        const sizeButton = await sizeMenu.$(`input[value="${size}"]`);
+        sizeButton && (await sizeButton.evaluate(async (e) => await e.click()));
       }
-      const viewMore = await sizeMenu.$(".side-filter__item-viewMore");
-      viewMore && (await viewMore.click());
-
-      await page.waitForSelector(`div.side-filter__item-content-each`);
-      const sizeButton = await sizeMenu.$(`input[value="${size}"]`);
-      sizeButton && (await sizeButton.evaluate(async (e) => await e.click()));
     }
+
+    await page.waitForSelector("a.S-product-item__img-container");
+    const allItems = await page.$$(".S-product-item");
+
+    const allItemsFormatted = await Promise.all(
+      allItems.map((i) => getItem(i))
+    );
+
+    await browser.close();
+    return allItemsFormatted;
+  } catch (error) {
+    console.log(error);
   }
-
-  await page.waitForSelector("a.S-product-item__img-container");
-  const allItems = await page.$$(".S-product-item");
-
-  const allItemsFormatted = await Promise.all(allItems.map((i) => getItem(i)));
-
-  await browser.close();
-  return allItemsFormatted;
 }
 
 async function getItem(itemElem) {
