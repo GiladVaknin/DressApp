@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 
-async function sheinPreview(linkToBuy) {
+async function terminalxPreview(linkToBuy) {
   const headless = process.env.headless || false;
   const browser = await puppeteer.launch({
     headless,
@@ -9,54 +9,44 @@ async function sheinPreview(linkToBuy) {
   const page = await browser.newPage();
   await page.goto(linkToBuy);
 
-  const item = { storeName: "Shein", linkToBuy };
+  const item = { storeName: "TerminalX", linkToBuy };
 
-  await page.waitForSelector("img.j-verlok-lazy.loaded");
+  await page.waitForSelector(".slick-slide.slick-active.slick-current");
   item.imgSrc = await page
-    .$("img.j-verlok-lazy.loaded")
+    .$("img.image_3k9y")
     .then((imgElem) => imgElem.getProperty("src"))
     .then((handle) => handle.jsonValue());
 
   item.title = await page
-    .$(".product-intro__head-name")
+    .$("h1.name_20R6")
     .then((elem) => elem.getProperty("innerText"))
     .then((handle) => handle.jsonValue());
 
-  const priceDiv = await page.$(".product-intro__head-price");
+  const priceDiv = await page.$(".prices_3bzP");
+
+  item.prevPrice = await priceDiv
+    .$(".prices-regular_yum0")
+    .then(async (div) => {
+      if (!div) return null;
+      const priceWithShach = await div
+        .getProperty("innerText")
+        .then((handle) => handle.jsonValue());
+
+      return Number(priceWithShach.replace("₪", ""));
+    });
 
   item.price = await priceDiv
-    .$("span")
+    .$(".prices-final_1R9x")
     .then((elem) => elem.getProperty("innerText"))
     .then(async (handle) => {
       const priceWithShach = await handle.jsonValue();
       return Number(priceWithShach.replace("₪", ""));
     });
 
-  item.prevPrice = await priceDiv.$(".del-price").then(async (div) => {
-    if (!div) return null;
-    const priceWithShach = await div
-      .getProperty("innerText")
-      .then((handle) => handle.jsonValue());
-
-    return Number(priceWithShach.replace("₪", ""));
-  });
-
-  item.discountPercent = await priceDiv
-    .$(".discount-label")
-    .then(async (div) => {
-      if (!div) return null;
-      const discountWithSymbols = await div
-        .getProperty("innerText")
-        .then((handle) => handle.jsonValue());
-      return Number(discountWithSymbols.replace("-", "").replace("%", ""));
-    });
-
-  item.rank = await page
-    .$(".ave-rate")
-    .then((elem) => elem.getProperty("innerText"))
-    .then(async (handle) => Number(await handle.jsonValue()));
+  item.discountPercent =
+    item.prevPrice && 100 * (1 - item.price / item.prevPrice);
 
   browser.close();
   return item;
 }
-module.exports = sheinPreview;
+module.exports = terminalxPreview;
