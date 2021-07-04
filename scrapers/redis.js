@@ -30,7 +30,6 @@ async function getCached(query, db) {
   if (query.colors?.length) query.colors = query.colors.sort(); //alphabetic order-to avoid duplicates
   if (query.sizes?.length) query.sizes = query.sizes.sort(); //alphabetic order-to avoid duplicates
 
-  console.log(HASH_SALT);
   const hashedQuery = await hash(stringify(query), HASH_SALT);
   return redis[db].get(hashedQuery).then(JSON.parse);
 }

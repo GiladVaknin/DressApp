@@ -17,9 +17,6 @@ app.post("/api/filter", async (req, res) => {
   const cached = await getCached(query, "items");
   if (cached) return res.json(cached);
 
-  // const sheinList = sheinScraper(query);
-  // const asosList = asosScraper(query);
-
   const scrapingPromises = scrapers.map((scraper) => scraper(query));
   const allResults = await Promise.all(scrapingPromises)
     .then(shuffleResults)
