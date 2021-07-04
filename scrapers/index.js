@@ -1,6 +1,7 @@
 const express = require("express");
-const sheinScraper = require("./shein");
-const asosScraper = require("./asos");
+const sheinScraper = require("./scrapers/shein");
+const asosScraper = require("./scrapers/asos");
+const scrapers = require("./scrapers");
 const previews = require("./previews");
 const cors = require("cors");
 const { signCache, getCached, getRecent } = require("./redis.js");
@@ -16,10 +17,11 @@ app.post("/api/filter", async (req, res) => {
   const cached = await getCached(query);
   if (cached) return res.json(cached);
 
-  const sheinList = sheinScraper(query);
-  const asosList = asosScraper(query);
+  // const sheinList = sheinScraper(query);
+  // const asosList = asosScraper(query);
 
-  const allResults = await Promise.all([asosList, sheinList])
+  const scrapingPromises = scrapers.map((scraper) => scraper(query));
+  const allResults = await Promise.all(scrapingPromises)
     .then(shuffleResults)
     .catch((e) => console.log(e));
 
