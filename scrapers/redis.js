@@ -9,8 +9,8 @@ const redis = new Redis({
   db: 0,
 });
 
-async function signCache(query, results) {
-  if (!results.length) return; // if there was an error, dont save
+async function signCache(query, results, singleResult) {
+  if (!results.length && !singleResult) return; // if there was an error, dont save
   if (query.colors?.length) query.colors = query.colors.sort(); //alphabetic order-to avoid duplicates
   if (query.sizes?.length) query.sizes = query.sizes.sort(); //alphabetic order-to avoid duplicates
 

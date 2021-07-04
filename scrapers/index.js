@@ -31,20 +31,12 @@ app.post("/api/filter", async (req, res) => {
 
 app.post("/api/preview", async (req, res) => {
   const { storeName, linkToBuy } = req.body.query;
-  let aborted = false;
+  const cached = await getCached(req.body.query);
+  if (cached) return res.json(cached);
 
-  await getCached({ linkToBuy }).then((results) => {
-    if (results) {
-      aborted = true;
-      res.json(results);
-    }
-  });
-
-  if (!aborted) {
-    const preview = await previews[storeName](linkToBuy);
-    res.json(preview);
-    signCache({ linkToBuy }, preview);
-  }
+  const preview = await previews[storeName](linkToBuy);
+  res.json(preview);
+  signCache(req.body.query, preview, true);
 });
 
 app.get("/api/recent", (req, res) => {
