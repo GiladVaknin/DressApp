@@ -12,7 +12,10 @@ async function sheinPreview(linkToBuy) {
   const item = { storeName: "Shein", linkToBuy };
 
   await page.waitForSelector("img.j-verlok-lazy.loaded");
-  item.imgSrc = await page
+  const imgContainer = await page.$(
+    ".swiper-slide.product-intro__main-item.cursor-zoom-in.swiper-slide-active"
+  );
+  item.imgSrc = await imgContainer
     .$("img.j-verlok-lazy.loaded")
     .then((imgElem) => imgElem.getProperty("src"))
     .then((handle) => handle.jsonValue());
