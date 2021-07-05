@@ -12,7 +12,8 @@ async function terminalxPreview(linkToBuy) {
   const item = { storeName: "TerminalX", linkToBuy };
 
   await page.waitForSelector(".slick-slide.slick-active.slick-current");
-  item.imgSrc = await page
+  const imgContainer = await page.$(".image-container_272l");
+  item.imgSrc = await imgContainer
     .$("img.image_3k9y")
     .then((imgElem) => imgElem.getProperty("src"))
     .then((handle) => handle.jsonValue());
