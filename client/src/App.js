@@ -69,7 +69,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>DressApp</h1>
+      <div id="header"></div>
       <FilterPannel getItems={getItems} />
       <div className="items">
         {items.map((item) => {
