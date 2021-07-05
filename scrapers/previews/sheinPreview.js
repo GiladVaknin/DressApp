@@ -1,11 +1,13 @@
 const puppeteer = require("puppeteer");
 
-async function sheinPreview(linkToBuy) {
+async function sheinPreview(linkToBuy, openBrowser) {
   const headless = process.env.headless || false;
-  const browser = await puppeteer.launch({
-    headless,
-    defaultViewport: { width: 3000, height: 2000 },
-  });
+  const browser =
+    openBrowser ||
+    (await puppeteer.launch({
+      headless,
+      defaultViewport: { width: 3000, height: 2000 },
+    }));
   const page = await browser.newPage();
   await page.goto(linkToBuy);
 
@@ -56,8 +58,8 @@ async function sheinPreview(linkToBuy) {
 
   item.rank = await page
     .$(".ave-rate")
-    .then((elem) => elem.getProperty("innerText"))
-    .then(async (handle) => Number(await handle.jsonValue()));
+    .then((elem) => elem && elem.getProperty("innerText"))
+    .then(async (handle) => handle && Number(await handle.jsonValue()));
 
   browser.close();
   return item;

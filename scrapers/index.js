@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const puppeteer = require("puppeteer");
 
 const scrapers = require("./scrapers");
 const previews = require("./previews");
@@ -36,16 +37,27 @@ app.post("/api/preview", async (req, res) => {
   signCache(req.body.query, preview, "previews");
 });
 
-app.post("/api/cachepreviews", (req, res) => {
+app.post("/api/cachepreviews", async (req, res) => {
   const { query } = req.body;
-  const promises = [];
-  for (const item of query) {
-    const preview = previews[item.storeName](item.linkToBuy).then((preview) =>
-      signCache(item, preview, "previews")
-    );
-    promises.push(preview);
+
+  const { headless = false } = process.env;
+  const browser = await puppeteer.launch({ headless });
+  try {
+    for (const item of query) {
+      const cached = await getCached(item, "previews");
+      if (cached) continue;
+
+      const preview = await previews[item.storeName](item.linkToBuy, browser);
+      signCache(item, preview, "previews");
+    }
+
+    browser.close();
+    res.send("OK");
+  } catch (e) {
+    browser.close();
+    res.send(e);
   }
-  Promise.allSettled(promises).then(() => res.send("OK"));
+  // Promise.allSettled(promises).then(() => res.send("OK"));
 });
 
 app.get("/api/recent", (req, res) => {

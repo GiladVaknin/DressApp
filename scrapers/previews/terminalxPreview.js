@@ -1,17 +1,20 @@
 const puppeteer = require("puppeteer");
 
-async function terminalxPreview(linkToBuy) {
+async function terminalxPreview(linkToBuy, openBrowser) {
   const headless = process.env.headless || false;
-  const browser = await puppeteer.launch({
-    headless,
-    defaultViewport: { width: 3000, height: 2000 },
-  });
+  const browser =
+    openBrowser ||
+    (await puppeteer.launch({
+      headless,
+      defaultViewport: { width: 3000, height: 2000 },
+    }));
   const page = await browser.newPage();
   await page.goto(linkToBuy);
 
   const item = { storeName: "TerminalX", linkToBuy };
 
-  await page.waitForSelector(".slick-slide.slick-active.slick-current");
+  await page.waitForSelector(".image-container_272l");
+
   const imgContainer = await page.$(".image-container_272l");
   item.imgSrc = await imgContainer
     .$("img.image_3k9y")
@@ -45,7 +48,7 @@ async function terminalxPreview(linkToBuy) {
     });
 
   item.discountPercent =
-    item.prevPrice && 100 * (1 - item.price / item.prevPrice);
+    item.prevPrice && Math.round(100 * (1 - item.price / item.prevPrice));
 
   browser.close();
   return item;

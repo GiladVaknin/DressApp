@@ -1,13 +1,15 @@
 const puppeteer = require("puppeteer");
 
-async function getPreview(linkToBuy) {
+async function getPreview(linkToBuy, openBrowser) {
   const item = { storeName: "Asos" };
   const headless = process.env.headless || false;
-  const browser = await puppeteer.launch({
-    headless,
-    defaultViewport: { width: 770, height: 1024 },
-    timeout: 500000,
-  });
+  const browser =
+    openBrowser ||
+    (await puppeteer.launch({
+      headless,
+      defaultViewport: { width: 770, height: 1024 },
+      timeout: 500000,
+    }));
 
   const page = await browser.newPage();
   await page.setUserAgent(

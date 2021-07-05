@@ -1,7 +1,7 @@
 .App {
   text-align: center;
   letter-spacing: 0.5px;
-  overflow-x: hidden;
+  overflow: hidden;
   font-family: "Bebas Neue", "Karantina", cursive;
 }
 

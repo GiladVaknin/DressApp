@@ -1,3 +1,4 @@
-module.exports.Shein = require("./sheinPreview");
-module.exports.Asos = require("./asosPreview");
-module.exports.TerminalX = require("./terminalxPreview");
+const Shein = require("./sheinPreview");
+const Asos = require("./asosPreview");
+const TerminalX = require("./terminalxPreview");
+module.exports = { Shein, Asos, TerminalX };
