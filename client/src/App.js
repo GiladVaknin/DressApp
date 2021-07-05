@@ -146,7 +146,67 @@ function App() {
       price: 119.9,
       discountPercent: null,
     },
+    {
+      storeName: "Asos",
+      title: "Calvin Klein Plus Size CK One lace lingerie set in red",
+      prevPrice: 0,
+      discountPercent: 0,
+      price: 180,
+      linkToBuy:
+        "https://www.asos.com/calvin-klein/calvin-klein-plus-size-ck-one-lace-lingerie-set-in-red/grp/47708?colourwayid=60471944&cid=6046",
+      rank: null,
+      imgSrc:
+        "https://images.asos-media.com/products/calvin-klein-plus-size-ck-one-lace-bikini-shape-brief-in-red/23327440-1-red?$n_640w$&wid=513&fit=constrain",
+    },
+    {
+      storeName: "TerminalX",
+      linkToBuy:
+        "https://www.terminalx.com/women/lingerie/x636545073?color=9012",
+      imgSrc:
+        "https://media.terminalx.com/pub/media/catalog/product/cache/f112238e8de94b6d480bd02e7a9501b8/x/6/x636545073-11625117712.jpg",
+      title: "חזיית תחרה עם רקמת פרחים / נשים",
+      prevPrice: null,
+      price: 119.9,
+      discountPercent: null,
+    },
+    {
+      storeName: "Shein",
+      linkToBuy:
+        "https://il.shein.com/X-Ubras-ONE-Seamless-Padded-Scoop-Bralet-p-2656530-cat-2203.html?scici=navbar_WomenHomePage~~tab01navbar05menu10~~5_10~~real_2195~~~~0",
+      imgSrc:
+        "https://img.ltwebstatic.com/images3_pi/2021/06/07/16230334186aed8ad6aa95cb27f97625a52ecbee31_thumbnail_900x.webp",
+      title: "Luvlette X Ubras ONE Seamless Padded Scoop Bralette",
+      price: 39,
+      prevPrice: 49,
+      discountPercent: 20,
+      rank: 4.8,
+    },
+    {
+      storeName: "Asos",
+      title: "Calvin Klein Plus Size CK One lace lingerie set in red",
+      prevPrice: 0,
+      discountPercent: 0,
+      price: 180,
+      linkToBuy:
+        "https://www.asos.com/calvin-klein/calvin-klein-plus-size-ck-one-lace-lingerie-set-in-red/grp/47708?colourwayid=60471944&cid=6046",
+      rank: null,
+      imgSrc:
+        "https://images.asos-media.com/products/calvin-klein-plus-size-ck-one-lace-bikini-shape-brief-in-red/23327440-1-red?$n_640w$&wid=513&fit=constrain",
+    },
+    {
+      storeName: "TerminalX",
+      linkToBuy:
+        "https://www.terminalx.com/women/lingerie/x636545100?color=9095",
+      imgSrc:
+        "https://media.terminalx.com/pub/media/catalog/product/cache/f112238e8de94b6d480bd02e7a9501b8/x/6/x636545100-11625117712.jpg",
+      title: "חזיית תחרה עם רקמת פרחים / נשים",
+      prevPrice: null,
+      price: 119.9,
+      discountPercent: null,
+    },
   ]);
+
+  const [shownItems, setShownItems] = useState([]);
 
   // useEffect(() => {
   //   getItems({
@@ -173,15 +233,47 @@ function App() {
       .catch(console.log);
   }
 
+  function loadItems() {
+    if (!items[0]) return;
+    if (items.length <= 10) {
+      let newItems = shownItems.slice();
+      const { length } = items;
+      for (let i = 0; i < length; i++) {
+        newItems.push(items.pop());
+      }
+      setShownItems(newItems);
+      cachePreviews();
+    } else {
+      let newItems = shownItems.slice();
+      console.log(items.length);
+      for (let i = 0; i < 9; i++) {
+        newItems.push(items.pop());
+      }
+      setShownItems(newItems);
+      cachePreviews();
+    }
+  }
+
+  function cachePreviews() {
+    axios({
+      method: "POST",
+      url: "http://localhost:8080/api/cachepreviews",
+      data: {
+        query: items.slice(0, 10),
+      },
+    });
+  }
+
   return (
     <div className="App">
       <div id="header"></div>
       <FilterPannel getItems={getItems} />
       <div className="items">
-        {items.map((item) => {
+        {shownItems.map((item) => {
           return <Item item={item} />;
         })}
       </div>
+      <button onClick={loadItems}>LOAD MORE</button>
     </div>
   );
 }

@@ -2,7 +2,22 @@
   text-align: center;
   letter-spacing: 0.5px;
   overflow-x: hidden;
+  font-family: "Bebas Neue", "Karantina", cursive;
+}
+
+.App button {
+  margin-top: 3vh;
+  height: 30px;
+  border: none;
+  background-color: unset;
+  font-size: 25px;
+  letter-spacing: 0.5px;
   font-family: "Bebas Neue", cursive;
+}
+
+.App button:hover {
+  text-shadow: 2px 2px #a5a5a5;
+  font-size: 25px;
 }
 
 .App #header {
@@ -22,16 +37,6 @@
       justify-content: space-around;
 }
 
-.App #filterPanel button {
-  margin-top: 3vh;
-  height: 30px;
-  border: none;
-  background-color: unset;
-  font-size: 25px;
-  letter-spacing: 0.5px;
-  font-family: "Bebas Neue", cursive;
-}
-
 .App .items {
   margin-top: 20px;
   display: -ms-grid;
@@ -39,6 +44,7 @@
   -ms-grid-columns: (1fr)[3];
       grid-template-columns: repeat(3, 1fr);
   gap: 10px;
+  overflow: hidden;
 }
 
 .App .items .item {
