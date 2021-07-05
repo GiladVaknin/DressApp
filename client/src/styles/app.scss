@@ -24,6 +24,7 @@
       background-color: unset;
       font-size: 25px;
       letter-spacing: 0.5px;
+      font-family: "Bebas Neue", cursive;
     }
   }
 
@@ -35,13 +36,33 @@
 
     .item {
       border: 0.5px solid rgb(165, 165, 165);
+      display: grid;
+      grid-template-columns: 100%;
+      grid-template-rows: 60% 20% 10% 10%;
+      .itemTitle {
+        font-size: 35px;
+      }
+
       img {
-        width: 80%;
+        width: 100%;
         margin-top: 20px;
-        height: 50%;
+        height: 100%;
       }
       a {
         color: teal;
+      }
+      .priceDetails {
+        .price {
+          font-size: 200%;
+        }
+        .prevPrice {
+          color: red;
+          font-size: 200%;
+          text-decoration: line-through;
+        }
+        .discountPercent {
+          font-size: 200%;
+        }
       }
     }
   }

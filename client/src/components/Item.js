@@ -2,18 +2,7 @@ import React, { useState, useEffect } from "react";
 const axios = require("axios");
 
 function Item(props) {
-  const [item, setItem] = useState({
-    storeName: "Shein",
-    linkToBuy:
-      "https://il.shein.com/Super-Push-Up-Bra-p-2103081-cat-2203.html?scici=navbar_WomenHomePage~~tab01navbar05menu10~~5_10~~real_2195~~~~0",
-    imgSrc:
-      "https://img.ltwebstatic.com/images3_pi/2021/03/01/16145639018f15912591e23dc43852b712822cce9c_thumbnail_220x293.webp",
-    title: "Super Push Up Bra",
-    price: 19,
-    prevPrice: 15,
-    discountPercent: 25,
-    rank: 4.7,
-  });
+  const [item, setItem] = useState(props.item);
 
   //   useEffect(() => {
   //     getPreview(props.item).then((res) => setItem(res));
@@ -35,8 +24,8 @@ function Item(props) {
     if (item.prevPrice > 0)
       return (
         <>
-          <h3>{item.prevPrice} ILS</h3>
-          <h3>-{item.discountPercent} %</h3>
+          <h3 className="prevPrice">{item.prevPrice} ₪</h3>
+          <h3 className="discountPercent">-{item.discountPercent} %</h3>
         </>
       );
     else return;
@@ -47,9 +36,9 @@ function Item(props) {
     item && (
       <div class="item">
         <img src={item.imgSrc} alt={item.title} />
-        <h2>{item.title}</h2>
-        <span>
-          <h3>{item.price} ILS</h3>
+        <h2 className="itemTitle">{item.title}</h2>
+        <span className="priceDetails">
+          <h3 className="price">{item.price} ₪</h3>
           {getPrevPrice()}
         </span>
         <h2>

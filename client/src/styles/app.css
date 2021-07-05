@@ -29,6 +29,7 @@
   background-color: unset;
   font-size: 25px;
   letter-spacing: 0.5px;
+  font-family: "Bebas Neue", cursive;
 }
 
 .App .items {
@@ -42,15 +43,39 @@
 
 .App .items .item {
   border: 0.5px solid #a5a5a5;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 100%;
+      grid-template-columns: 100%;
+  -ms-grid-rows: 60% 20% 10% 10%;
+      grid-template-rows: 60% 20% 10% 10%;
+}
+
+.App .items .item .itemTitle {
+  font-size: 35px;
 }
 
 .App .items .item img {
-  width: 80%;
+  width: 100%;
   margin-top: 20px;
-  height: 50%;
+  height: 100%;
 }
 
 .App .items .item a {
   color: teal;
+}
+
+.App .items .item .priceDetails .price {
+  font-size: 200%;
+}
+
+.App .items .item .priceDetails .prevPrice {
+  color: red;
+  font-size: 200%;
+  text-decoration: line-through;
+}
+
+.App .items .item .priceDetails .discountPercent {
+  font-size: 200%;
 }
 /*# sourceMappingURL=app.css.map */
