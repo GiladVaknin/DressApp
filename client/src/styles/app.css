@@ -65,6 +65,14 @@
   color: teal;
 }
 
+.App .items .item .priceDetails {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
 .App .items .item .priceDetails .price {
   font-size: 200%;
 }
