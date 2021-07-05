@@ -25,9 +25,7 @@ async function main(product) {
     });
     const menu = await page.$('button[aria-label="Open navigation menu"]');
     await menu.click();
-    const [category] = await page.$x(
-      `//button[contains(., '${product.category}')]`
-    );
+    const [category] = await page.$x(`//button[contains(., 'Clothing')]`);
     category && (await category.click());
 
     await page.waitForSelector("._1yLqhTn");
@@ -50,15 +48,16 @@ async function main(product) {
       }
     }
 
+    await page.waitForXPath(`//button[contains(., 'Size')]`);
     const [size] = await page.$x(`//button[contains(., 'Size')]`);
 
     if (size) {
-      await page.setViewport({ width: 770, height: 1024 });
       await size.evaluate((node) => node.click());
+
       for (const size of product.sizes) {
         await page.waitForSelector(`li._3LB03xF`);
         const [sizeSelect] = await page.$x(`//label[contains(., '${size}')]`);
-        await sizeSelect.click();
+        sizeSelect && (await sizeSelect.click());
         // await page.waitForNavigation({ waitUntil: "networkidle2" });
       }
     }
