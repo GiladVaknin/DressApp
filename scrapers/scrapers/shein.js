@@ -41,12 +41,10 @@ async function shain({
   const browser = await puppeteer.launch({
     headless,
     // slowMo: 50,
-    defaultViewport: { width: 2000, height: 1500 },
+    defaultViewport: { width: 2000, height: 2000 },
   });
   const page = await browser.newPage();
   try {
-    await page.setViewport({ width: 2000, height: 1500 });
-
     const finalURL = "https://il.shein.com/" + gender;
     await page.goto(finalURL);
 
@@ -95,11 +93,12 @@ async function shain({
         );
 
         if (!isOpen) {
-          await sizeMenu.evaluate((node) => node.scrollIntoView());
-          await page.click(`div[aria-label="Size"]`);
+          await sizeMenu.evaluate((node) => node.scrollIntoView(true));
+          await sizeMenu.click();
         }
+
         const viewMore = await sizeMenu.$(".side-filter__item-viewMore");
-        viewMore && (await viewMore.click());
+        viewMore && (await viewMore.evaluate(async (e) => await e.click()));
 
         await page.waitForSelector(`div.side-filter__item-content-each`);
         const sizeButton = await sizeMenu.$(`input[value="${size}"]`);

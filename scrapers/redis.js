@@ -44,21 +44,8 @@ async function getRecent(limit) {
     .map((jsonArr) => JSON.parse(jsonArr).slice(0, 6))
     .flat();
 
-  return output;
-
-  Promise.allSettled(keys.map((key) => redis.items.get(key))).then(
-    (promArr) => {
-      return promArr
-        .map((promise) => {
-          if (promise.status === "fulfilled") {
-            return promise.value;
-          } else {
-            return null;
-          }
-        })
-        .filter((val) => val)
-        .flat();
-    }
+  return Promise.all(output.map((item) => getCached(item, "previews"))).then(
+    (arr) => arr.filter((val) => val) //remove nulls
   );
 }
 module.exports = { signCache, getCached, getRecent };
