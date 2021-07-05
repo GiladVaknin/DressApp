@@ -69,7 +69,7 @@ function FilterMenu(props) {
   const getItems = props.getItems;
 
   return (
-    <div>
+    <div id="filterPanel">
       <SingleSelect
         ref={query}
         selectName="GENDER"

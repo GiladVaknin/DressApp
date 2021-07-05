@@ -1,0 +1,38 @@
+.App {
+  text-align: center;
+  letter-spacing: 0.5px;
+  overflow-x: hidden;
+}
+
+.App #filterPanel {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  text-align: center;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.App #filterPanel button {
+  margin-top: 3vh;
+  height: 30px;
+  border: none;
+  background-color: unset;
+  font-size: 25px;
+  letter-spacing: 0.5px;
+}
+
+.App .items {
+  margin-top: 20px;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (1fr)[3];
+      grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.App .items .item img {
+  width: 80%;
+  height: 50%;
+}
+/*# sourceMappingURL=app.css.map */
