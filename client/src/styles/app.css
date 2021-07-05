@@ -2,6 +2,15 @@
   text-align: center;
   letter-spacing: 0.5px;
   overflow-x: hidden;
+  font-family: "Bebas Neue", cursive;
+}
+
+.App #header {
+  background-color: black;
+  background-image: url("../DressApp.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 20vh;
 }
 
 .App #filterPanel {
@@ -31,8 +40,17 @@
   gap: 10px;
 }
 
+.App .items .item {
+  border: 0.5px solid #a5a5a5;
+}
+
 .App .items .item img {
   width: 80%;
+  margin-top: 20px;
   height: 50%;
+}
+
+.App .items .item a {
+  color: teal;
 }
 /*# sourceMappingURL=app.css.map */
