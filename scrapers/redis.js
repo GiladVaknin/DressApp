@@ -44,9 +44,7 @@ async function getRecent(limit) {
     .map((jsonArr) => JSON.parse(jsonArr).slice(0, 6))
     .flat();
 
-  return Promise.all(output.map((item) => getCached(item, "previews"))).then(
-    (arr) => arr.filter((val) => val) //remove nulls
-  );
+  return output;
 }
 module.exports = { signCache, getCached, getRecent };
 

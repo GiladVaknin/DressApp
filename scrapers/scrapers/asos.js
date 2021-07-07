@@ -43,6 +43,7 @@ async function main(product) {
       for (const color of product.colors) {
         await page.waitForSelector(`li._3LB03xF`);
         const [colorBtn] = await page.$x(`//label[contains(., "${color}")]`);
+        await colorBtn.evaluate((node) => node.scrollIntoView());
         await colorBtn.click();
         // await page.waitForNavigation({ waitUntil: "networkidle2" });
       }
@@ -57,6 +58,7 @@ async function main(product) {
       for (const size of product.sizes) {
         await page.waitForSelector(`li._3LB03xF`);
         const [sizeSelect] = await page.$x(`//label[contains(., '${size}')]`);
+        await sizeSelect.evaluate((node) => node.scrollIntoView());
         sizeSelect && (await sizeSelect.click());
         // await page.waitForNavigation({ waitUntil: "networkidle2" });
       }

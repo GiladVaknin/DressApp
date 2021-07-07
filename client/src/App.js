@@ -65,7 +65,7 @@ function App() {
 
   useEffect(() => {
     getRecent()
-      .then((res) => setItems(res.data))
+      .then((res) => setShownItems(res.data))
       .catch(console.log);
   }, []);
 
