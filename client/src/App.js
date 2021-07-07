@@ -19,7 +19,7 @@ function App() {
     })
       .then((res) => {
         const allItems = res.data;
-        items = allItems;
+        items.current = allItems;
         setShownItems([]);
         loadItems();
       })
