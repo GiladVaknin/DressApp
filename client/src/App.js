@@ -18,33 +18,29 @@ function App() {
       },
     })
       .then((res) => {
-        const allItems = res.data;
-        items.current = allItems;
-        setShownItems([]);
-        loadItems();
+        items.current = res.data;
+        loadItems([]);
       })
       .catch(console.log);
   }
 
-  function loadItems() {
-    if (!items[0]) return;
-    if (items.length <= 10) {
-      let newItems = shownItems.slice();
-      const { length } = items;
+  function loadItems(oldItems) {
+    const { length } = items.current;
+    if (!length) return;
+
+    const newItems = oldItems.slice();
+    if (length <= 10) {
       for (let i = 0; i < length; i++) {
-        newItems.push(items.pop());
+        newItems.push(items.current.pop());
       }
-      setShownItems(newItems);
-      cachePreviews();
     } else {
-      let newItems = shownItems.slice();
-      console.log(items.length);
       for (let i = 0; i < 9; i++) {
-        newItems.push(items.pop());
+        newItems.push(items.current.pop());
       }
-      setShownItems(newItems);
-      cachePreviews();
     }
+
+    setShownItems(newItems);
+    cachePreviews();
   }
 
   function cachePreviews() {
@@ -52,7 +48,7 @@ function App() {
       method: "POST",
       url: "http://localhost:8080/api/cachepreviews",
       data: {
-        query: items.slice(0, 10),
+        query: items.current.slice(0, 10),
       },
     });
   }
@@ -61,12 +57,12 @@ function App() {
     return axios({
       method: "GET",
       url: "http://localhost:8080/api/recent",
-    });
+    }).then((res) => res.data);
   }
 
   useEffect(() => {
     getRecent()
-      .then((res) => setShownItems(res.data))
+      .then((res) => setShownItems(res))
       .catch(console.log);
   }, []);
 
@@ -79,7 +75,9 @@ function App() {
           return <Item item={item} />;
         })}
       </div>
-      {items.length ? <button onClick={loadItems}>LOAD MORE</button> : null}
+      {items.current.length ? (
+        <button onClick={() => loadItems(shownItems)}>LOAD MORE</button>
+      ) : null}
     </div>
   );
 }
