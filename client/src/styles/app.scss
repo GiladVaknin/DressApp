@@ -27,18 +27,31 @@
   }
 
   #filterPanel {
+    background-color: white;
     display: flex;
     text-align: center;
+    align-items: center;
     justify-content: space-around;
     position: -webkit-sticky;
     position: sticky;
     top: 0;
+    z-index: 10;
+    height: 5vh;
+    border-bottom: 1px solid rgba(172, 172, 172, 0.5);
+
+    button {
+      height: 100%;
+      margin-top: 0;
+      line-height: 5vh;
+      text-align: center;
+      justify-content: center;
+    }
   }
 
   .items {
     margin-top: 20px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     overflow: hidden;
 
@@ -50,15 +63,22 @@
       position: relative;
       background-color: rgba(239, 238, 238, 0.5);
       height: 50vh;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      color: black;
+      text-decoration: none;
 
       .itemTitle {
         font-size: 35px;
       }
 
-      img {
-        width: 100%;
-        margin-top: 20px;
-        height: 100%;
+      span {
+        background-color: rgba(239, 238, 238, 0.5);
+        height: fit-content;
+        // min-height: 3vh;
+        transition: 500ms;
+        font-size: 35px;
       }
       a {
         color: black;
@@ -67,18 +87,21 @@
       .priceDetails {
         display: flex;
         justify-content: space-around;
-        .price {
-          font-size: 200%;
+        h3 {
+          margin: 0;
+          font-size: 85%;
         }
         .prevPrice {
-          color: red;
-          font-size: 200%;
+          color: rgba(150, 0, 0, 0.808);
           text-decoration: line-through;
-        }
-        .discountPercent {
-          font-size: 200%;
         }
       }
     }
+  }
+}
+
+.item:hover {
+  span {
+    filter: opacity(0);
   }
 }

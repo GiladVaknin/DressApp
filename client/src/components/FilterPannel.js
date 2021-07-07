@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import MultipleSelect from "./MultipleSelect";
 import SingleSelect from "./SingleSelect";
-const axios = require("axios");
 
 function FilterMenu(props) {
   const query = useRef({
