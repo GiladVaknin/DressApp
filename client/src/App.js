@@ -10,6 +10,8 @@ function App() {
   const [shownItems, setShownItems] = useState([]);
 
   function getItems(query) {
+    setShownItems([]);
+    items.current = [];
     return axios({
       method: "POST",
       url: "http://localhost:8080/api/filter",
@@ -20,7 +22,6 @@ function App() {
       .then((res) => {
         items.current = res.data;
         loadItems([]);
-        setShownItems([]);
       })
       .catch(console.log);
   }
