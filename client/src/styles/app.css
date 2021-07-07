@@ -1,8 +1,9 @@
 .App {
   text-align: center;
   letter-spacing: 0.5px;
-  overflow: hidden;
+  overflow-y: scroll;
   font-family: "Bebas Neue", "Karantina", cursive;
+  height: 100vh;
 }
 
 .App button {
@@ -35,6 +36,9 @@
   text-align: center;
   -ms-flex-pack: distribute;
       justify-content: space-around;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
 }
 
 .App .items {
@@ -55,6 +59,9 @@
       grid-template-columns: 100%;
   -ms-grid-rows: 60% 20% 10% 10%;
       grid-template-rows: 60% 20% 10% 10%;
+  position: relative;
+  background-color: rgba(239, 238, 238, 0.5);
+  height: 50vh;
 }
 
 .App .items .item .itemTitle {
@@ -68,7 +75,8 @@
 }
 
 .App .items .item a {
-  color: teal;
+  color: black;
+  text-shadow: 2px 2px #a5a5a5;
 }
 
 .App .items .item .priceDetails {

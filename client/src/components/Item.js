@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Loader from "../components/Loader";
 const axios = require("axios");
 
 function Item(props) {
@@ -31,19 +32,25 @@ function Item(props) {
     else return;
   }
 
-  return item ? (
+  return (
     <div class="item">
-      <img src={item.imgSrc} alt={item.title} />
-      <h2 className="itemTitle">{item.title}</h2>
-      <span className="priceDetails">
-        <h3 className="price">{item.price} ₪</h3>
-        {getPrevPrice()}
-      </span>
-      <h2>
-        <a href={item.linkToBuy}>Shop Now!</a>
-      </h2>
+      {item.imgSrc ? (
+        <>
+          <img src={item.imgSrc} alt={item.title} />
+          <h2 className="itemTitle">{item.title}</h2>
+          <span className="priceDetails">
+            <h3 className="price">{item.price} ₪</h3>
+            {getPrevPrice()}
+          </span>
+          <h2>
+            <a href={item.linkToBuy}>Shop Now!</a>
+          </h2>
+        </>
+      ) : (
+        <Loader />
+      )}
     </div>
-  ) : null;
+  );
 }
 
 export default Item;

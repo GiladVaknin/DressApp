@@ -1,9 +1,9 @@
 .App {
   text-align: center;
   letter-spacing: 0.5px;
-  overflow: hidden;
+  overflow-y: scroll;
   font-family: "Bebas Neue", "Karantina", cursive;
-
+  height: 100vh;
   button {
     margin-top: 3vh;
     height: 30px;
@@ -30,6 +30,9 @@
     display: flex;
     text-align: center;
     justify-content: space-around;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
   }
 
   .items {
@@ -44,6 +47,9 @@
       display: grid;
       grid-template-columns: 100%;
       grid-template-rows: 60% 20% 10% 10%;
+      position: relative;
+      background-color: rgba(239, 238, 238, 0.5);
+      height: 50vh;
 
       .itemTitle {
         font-size: 35px;
@@ -55,7 +61,8 @@
         height: 100%;
       }
       a {
-        color: teal;
+        color: black;
+        text-shadow: 2px 2px rgb(165, 165, 165);
       }
       .priceDetails {
         display: flex;
