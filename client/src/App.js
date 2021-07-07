@@ -20,6 +20,7 @@ function App() {
       .then((res) => {
         const allItems = res.data;
         setItems(allItems);
+        setShownItems([]);
         loadItems();
       })
       .catch(console.log);
