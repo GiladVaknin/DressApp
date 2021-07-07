@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 const axios = require("axios");
 
 function App() {
-  const [items, setItems] = useState([]);
+  let items = [];
   const [shownItems, setShownItems] = useState([]);
 
   function getItems(query) {
@@ -19,7 +19,7 @@ function App() {
     })
       .then((res) => {
         const allItems = res.data;
-        setItems(allItems);
+        items = allItems;
         setShownItems([]);
         loadItems();
       })
