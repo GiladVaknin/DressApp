@@ -61,7 +61,9 @@ app.post("/api/cachepreviews", async (req, res) => {
 });
 
 app.get("/api/recent", (req, res) => {
-  getRecent().then((result) => res.json(result ? result : { e: "error" }));
+  getRecent()
+    .then((result) => res.json(result ? result : { e: "No Cache" }))
+    .catch((e) => res.json({ e }));
 });
 
 const { PORT } = process.env;

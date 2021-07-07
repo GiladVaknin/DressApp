@@ -19,8 +19,8 @@ function App() {
     })
       .then((res) => {
         const allItems = res.data;
-        setItems(allItems.slice(9));
-        setShownItems(allItems.slice(0, 9));
+        setItems(allItems);
+        loadItems();
       })
       .catch(console.log);
   }

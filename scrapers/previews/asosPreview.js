@@ -56,7 +56,7 @@ async function getPreview(linkToBuy, openBrowser) {
     .$(`div[class="fullImageContainer"] img`)
     .then((image) => image.getProperty("src"))
     .then((handle) => handle.jsonValue());
-  await browser.close();
+  openBrowser ? await page.close() : await browser.close();
   return item;
 }
 

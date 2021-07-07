@@ -50,7 +50,7 @@ async function terminalxPreview(linkToBuy, openBrowser) {
   item.discountPercent =
     item.prevPrice && Math.round(100 * (1 - item.price / item.prevPrice));
 
-  browser.close();
+  openBrowser ? await page.close() : await browser.close();
   return item;
 }
 module.exports = terminalxPreview;

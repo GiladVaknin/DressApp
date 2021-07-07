@@ -61,7 +61,7 @@ async function sheinPreview(linkToBuy, openBrowser) {
     .then((elem) => elem && elem.getProperty("innerText"))
     .then(async (handle) => handle && Number(await handle.jsonValue()));
 
-  browser.close();
+  openBrowser ? await page.close() : await browser.close();
   return item;
 }
 module.exports = sheinPreview;
