@@ -2,11 +2,11 @@ import "./styles/app.css";
 import Item from "./components/Item";
 import FilterPannel from "./components/FilterPannel";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 const axios = require("axios");
 
 function App() {
-  let items = [];
+  const items = useRef([]);
   const [shownItems, setShownItems] = useState([]);
 
   function getItems(query) {
