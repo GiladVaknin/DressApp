@@ -20,6 +20,7 @@ function App() {
       .then((res) => {
         items.current = res.data;
         loadItems([]);
+        setShownItems([]);
       })
       .catch(console.log);
   }
