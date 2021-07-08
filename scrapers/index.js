@@ -32,7 +32,8 @@ app.post("/api/preview", async (req, res) => {
   const cached = await getCached(req.body.query, "previews");
   if (cached) return res.json(cached);
 
-  const preview = await previews[storeName](linkToBuy);
+  const browser = await previews.previewsBrowser;
+  const preview = await previews[storeName](linkToBuy, browser);
   res.json(preview);
   signCache(req.body.query, preview, "previews");
 });

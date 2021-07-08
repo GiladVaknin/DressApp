@@ -61,71 +61,77 @@ async function main({
   sizes = [],
 }) {
   if (TRANSLATIONS[gender][productType] === "none") return Promise.resolve([]);
+  try {
+    const headless = process.env.headless || false;
+    const browser = await puppeteer.launch({
+      headless,
+      // slowMo: 50,
+      defaultViewport: { width: 1600, height: 1000 },
+    });
+    const page = await browser.newPage();
+    await page.setUserAgent(
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+    );
+    const finalURL = "https://www.terminalx.com/";
+    await page.goto(finalURL);
+    const genderSearch = TRANSLATIONS.genders[gender];
+    const genderButton = await page.$(`a[title="${genderSearch}"`);
+    await genderButton.hover();
 
-  const headless = process.env.headless || false;
-  const browser = await puppeteer.launch({
-    headless,
-    // slowMo: 50,
-    defaultViewport: { width: 1600, height: 1000 },
-  });
-  const page = await browser.newPage();
-  await page.setUserAgent(
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
-  );
-  const finalURL = "https://www.terminalx.com/";
-  await page.goto(finalURL);
-  const genderSearch = TRANSLATIONS.genders[gender];
-  const genderButton = await page.$(`a[title="${genderSearch}"`);
-  await genderButton.hover();
+    await page.waitForSelector(".container_5D-U.open_3sih");
+    const typeMenu = await page.$(".container_5D-U.open_3sih");
+    const searchType = TRANSLATIONS[gender][productType] || productType;
+    const typeButton = await typeMenu.$(`a[title="${searchType}"]`);
+    await typeButton.evaluate(async (e) => await e.click());
 
-  await page.waitForSelector(".container_5D-U.open_3sih");
-  const typeMenu = await page.$(".container_5D-U.open_3sih");
-  const searchType = TRANSLATIONS[gender][productType] || productType;
-  const typeButton = await typeMenu.$(`a[title="${searchType}"]`);
-  await typeButton.evaluate(async (e) => await e.click());
+    if (colors.length) {
+      await page.waitForSelector("h4.title_ramR", { visible: true });
+      const [colorMenuButton] = await page.$x("//h4[contains(text(),'צבע')]");
+      await colorMenuButton.evaluate((e) => e.click());
 
-  if (colors.length) {
-    await page.waitForSelector("h4.title_ramR", { visible: true });
-    const [colorMenuButton] = await page.$x("//h4[contains(text(),'צבע')]");
-    await colorMenuButton.evaluate((e) => e.click());
+      for (color of colors) {
+        await page.waitForSelector(`ol.filter-items-color_1yRV`, {
+          visible: true,
+        });
+        const colorMenu = await page.$(`ol.filter-items-color_1yRV`);
+        const searchColor = TRANSLATIONS.colors[color] || color;
+        const colorButton = await colorMenu.$(`a[title="${searchColor}"]`);
 
-    for (color of colors) {
-      await page.waitForSelector(`ol.filter-items-color_1yRV`, {
-        visible: true,
-      });
-      const colorMenu = await page.$(`ol.filter-items-color_1yRV`);
-      const searchColor = TRANSLATIONS.colors[color] || color;
-      const colorButton = await colorMenu.$(`a[title="${searchColor}"]`);
-
-      colorButton && (await colorButton.evaluate((e) => e.click()));
-      await page.waitForRequest("https://www.google-analytics.com/collect"); //request fires up the moment loading is done
+        colorButton && (await colorButton.evaluate((e) => e.click()));
+        await page.waitForRequest("https://www.google-analytics.com/collect"); //request fires up the moment loading is done
+      }
     }
-  }
 
-  if (sizes.length) {
-    await page.waitForSelector("h4.title_ramR", { visible: true });
-    const [colorMenuButton] = await page.$x("//h4[contains(text(),'מידה')]");
-    await colorMenuButton.evaluate((e) => e.click());
+    if (sizes.length) {
+      await page.waitForSelector("h4.title_ramR", { visible: true });
+      const [colorMenuButton] = await page.$x("//h4[contains(text(),'מידה')]");
+      await colorMenuButton.evaluate((e) => e.click());
 
-    for (size of sizes) {
-      await page.waitForSelector(`ol.filter-items_1wKn`, {
-        visible: true,
-      });
-      const sizeMenu = await page.$(`ol.filter-items_1wKn`);
-      const sizeButton = await sizeMenu.$(`a[title="${size}"]`);
+      for (size of sizes) {
+        await page.waitForSelector(`ol.filter-items_1wKn`, {
+          visible: true,
+        });
+        const sizeMenu = await page.$(`ol.filter-items_1wKn`);
+        const sizeButton = await sizeMenu.$(`a[title="${size}"]`);
 
-      sizeButton && (await sizeButton.evaluate((e) => e.click()));
-      await page.waitForRequest("https://www.google-analytics.com/collect"); //request fires up the moment loading is done
+        sizeButton && (await sizeButton.evaluate((e) => e.click()));
+        await page.waitForRequest("https://www.google-analytics.com/collect"); //request fires up the moment loading is done
+      }
     }
+
+    await page.waitForSelector("li.listing-product_3mjp");
+    const allItems = await page.$$("li.listing-product_3mjp");
+
+    const allItemsFormatted = await Promise.all(
+      allItems.map((item) => getItem(item))
+    );
+
+    await browser.close();
+    return allItemsFormatted;
+  } catch (error) {
+    console.log(error);
+    return [];
   }
-
-  await page.waitForSelector("li.listing-product_3mjp");
-  const allItems = await page.$$("li.listing-product_3mjp");
-
-  const allItemsFormatted = await Promise.all(allItems.map((i) => getItem(i)));
-
-  await browser.close();
-  return allItemsFormatted;
 }
 
 async function getItem(itemElem) {

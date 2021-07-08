@@ -9,6 +9,8 @@ function App() {
   const items = useRef([]);
   const [shownItems, setShownItems] = useState([]);
 
+  console.log(items.current);
+
   function getItems(query) {
     setShownItems([]);
     items.current = [];
@@ -33,11 +35,11 @@ function App() {
     const newItems = oldItems.slice();
     if (length <= 10) {
       for (let i = 0; i < length; i++) {
-        newItems.push(items.current.pop());
+        newItems.push(items.current.shift());
       }
     } else {
       for (let i = 0; i < 9; i++) {
-        newItems.push(items.current.pop());
+        newItems.push(items.current.shift());
       }
     }
 

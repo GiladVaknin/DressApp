@@ -12,7 +12,6 @@ async function main(product) {
     defaultViewport: { width: 770, height: 1024 },
     timeout: 500000,
   });
-
   const page = await browser.newPage();
   try {
     await page.setUserAgent(
@@ -68,7 +67,7 @@ async function main(product) {
 
     const allItemsFormatted = await Promise.all(
       items.map(async (item) => {
-        const itemLink = await item
+        const linkToBuy = await item
           .$("a._3TqU78D")
           .then((elem) => elem.getProperty("href"))
           .then((handle) => handle.jsonValue())
@@ -76,7 +75,7 @@ async function main(product) {
 
         return {
           storeName: "Asos",
-          linkToBuy: itemLink,
+          linkToBuy,
         };
       })
     );

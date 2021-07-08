@@ -51,6 +51,7 @@ module.exports = { signCache, getCached, getRecent };
 function stringify(query) {
   let string = "";
   for (prop in query) {
+    if (!query[prop]) continue;
     if (typeof query[prop] === "string") string += query[prop];
     else {
       query[prop].forEach((val) => (string += val));

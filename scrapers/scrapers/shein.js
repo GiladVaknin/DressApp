@@ -117,6 +117,7 @@ async function shain({
     return allItemsFormatted;
   } catch (error) {
     console.log(error);
+    return [];
   }
 }
 
