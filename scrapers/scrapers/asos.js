@@ -37,23 +37,27 @@ async function main(product) {
     const productType = await openMenu.$(`div[title='${product.productType}']`);
 
     productType && (await productType.evaluate((e) => e.click()));
+
+    await page.waitForNavigation();
+
     if (product.colors?.length) {
-      await page.waitForXPath(`//button[contains(., 'Colour')]`);
-      const [colour] = await page.$x(`//button[contains(., 'Colour')]`);
+      await page.waitForXPath(`//button[.='Colour']`, { visible: true });
+      const [colour] = await page.$x(`//button[.='Colour']`);
 
       if (colour) {
-        await colour.click();
+        await colour.evaluate((node) => node.click());
         await page.setViewport({ width: 770, height: 1300 });
         for (const color of product.colors) {
           await page.waitForSelector(`li._3LB03xF`);
           const [colorBtn] = await page.$x(`//label[contains(., "${color}")]`);
-          await colorBtn.evaluate((node) => node.scrollIntoView());
           await colorBtn.click();
+          await page.waitForXPath(`//label[contains(., "${color}")]`);
         }
       }
     }
+
     if (product.sizes?.length) {
-      await page.waitForNavigation();
+      await page.waitForXPath(`//button[.='Size']`, { visible: true });
       const [size] = await page.$x(`//button[.='Size']`);
 
       if (size) {
@@ -63,11 +67,10 @@ async function main(product) {
           const sizeValue = SIZE_VALUES[size];
           await page.waitForSelector(`li._3LB03xF div`);
           const sizeSelect = await page.$(`input[value='${sizeValue}']`);
-          console.log(sizeSelect?._remoteObject.description);
-          // sizeSelect &&
-          //   (await sizeSelect.evaluate((node) => node.scrollIntoView()));
-          sizeSelect &&
-            (await sizeSelect.evaluate(async (node) => await node.click()));
+
+          await sizeSelect.evaluate(async (node) => await node.click());
+
+          await page.waitForSelector(`input[value='${sizeValue}']`);
         }
       }
     }
