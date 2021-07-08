@@ -1,6 +1,8 @@
 import "./styles/app.css";
 import Item from "./components/Item";
 import FilterPannel from "./components/FilterPannel";
+import DancingLoader from "./components/DancingLoader";
+import Iframe from "react-iframe";
 
 import { useState, useEffect, useRef } from "react";
 const axios = require("axios");
@@ -74,11 +76,17 @@ function App() {
     <div className="App">
       <div id="header"></div>
       <FilterPannel getItems={getItems} />
-      <div className="items">
-        {shownItems.map((item) => {
-          return <Item item={item} />;
-        })}
-      </div>
+
+      {shownItems.length ? (
+        <div className="items">
+          {shownItems.map((item) => {
+            return <Item item={item} />;
+          })}
+        </div>
+      ) : (
+        <DancingLoader />
+      )}
+
       {items.current.length ? (
         <button onClick={() => loadItems(shownItems)}>LOAD MORE</button>
       ) : null}
