@@ -19,9 +19,9 @@ async function main(product) {
     );
     await page.setViewport({ width: 770, height: 1024 });
 
-    await page.goto(BASE_URL + "/" + product.gender, {
-      waitUntil: "networkidle2",
-    });
+    await page.goto(BASE_URL + "/" + product.gender);
+
+    await page.waitForSelector('button[aria-label="Open navigation menu"]');
     const menu = await page.$('button[aria-label="Open navigation menu"]');
     await menu.click();
     const [category] = await page.$x(`//button[contains(., 'Clothing')]`);
