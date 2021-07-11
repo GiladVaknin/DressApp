@@ -57,15 +57,20 @@
     }
   }
   #mobileToolTip {
-    position: fixed;
     bottom: 0;
-    z-index: 15;
+    z-index: 8;
     text-align: center;
     width: 100%;
     background-color: rgba(255, 255, 255, 0.6);
     font-size: 25px;
-
     display: none;
+    margin-top: 10px;
+    .fas.fa-angle-double-right {
+      font-size: 25px;
+    }
+    .fas.fa-angle-double-left {
+      font-size: 25px;
+    }
     @media (max-width: 500px) {
       display: block;
     }
@@ -78,6 +83,13 @@
     grid-template-columns: repeat(4, 1fr);
     overflow: hidden;
 
+    @media (max-width: 800px) {
+      margin-top: 20px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(3, 1fr);
+      overflow: hidden;
+    }
     @media (max-width: 500px) {
       margin-top: 20px;
       display: grid;

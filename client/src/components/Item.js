@@ -65,9 +65,24 @@ function Item(props) {
           <span className="itemTitle">{item.title}</span>
           <span className="priceDetails">{getPrice()}</span>
           <span>
-            <a href={item.linkToBuy}>Buy at {item.storeName}</a>
+            <a href={item.linkToBuy} rel="noreferrer" target="_blank">
+              Buy at {item.storeName}
+            </a>
           </span>
           {item.rank ? <Rank rank={item.rank} /> : null}
+          <div id="mobileToolTip">
+            {mobileDetails.length ? (
+              <>
+                Swipe right to close details{" "}
+                <i className="fas fa-angle-double-right"></i>
+              </>
+            ) : (
+              <>
+                <i className="fas fa-angle-double-left"></i> Swipe left for
+                details
+              </>
+            )}
+          </div>
         </>
       ) : (
         <Loader />

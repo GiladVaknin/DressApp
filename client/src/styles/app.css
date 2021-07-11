@@ -72,14 +72,22 @@
 }
 
 .App #mobileToolTip {
-  position: fixed;
   bottom: 0;
-  z-index: 15;
+  z-index: 8;
   text-align: center;
   width: 100%;
   background-color: rgba(255, 255, 255, 0.6);
   font-size: 25px;
   display: none;
+  margin-top: 10px;
+}
+
+.App #mobileToolTip .fas.fa-angle-double-right {
+  font-size: 25px;
+}
+
+.App #mobileToolTip .fas.fa-angle-double-left {
+  font-size: 25px;
 }
 
 @media (max-width: 500px) {
@@ -96,6 +104,18 @@
   -ms-grid-columns: (1fr)[4];
       grid-template-columns: repeat(4, 1fr);
   overflow: hidden;
+}
+
+@media (max-width: 800px) {
+  .App .items {
+    margin-top: 20px;
+    display: -ms-grid;
+    display: grid;
+    gap: 10px;
+    -ms-grid-columns: (1fr)[3];
+        grid-template-columns: repeat(3, 1fr);
+    overflow: hidden;
+  }
 }
 
 @media (max-width: 500px) {
