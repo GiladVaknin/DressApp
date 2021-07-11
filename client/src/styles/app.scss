@@ -9,10 +9,11 @@
     margin-top: 3vh;
     height: 30px;
     border: none;
-    background-color: unset;
+    background-color: white;
     font-size: 25px;
     letter-spacing: 0.5px;
     font-family: "Bebas Neue", cursive;
+    z-index: 25;
   }
   button:hover {
     text-shadow: 2px 2px rgb(165, 165, 165);
@@ -49,6 +50,7 @@
     button {
       height: 100%;
       margin-top: 0;
+      margin-bottom: 0;
       line-height: 5vh;
       text-align: center;
       justify-content: center;
@@ -57,14 +59,13 @@
   #mobileToolTip {
     position: fixed;
     bottom: 0;
-    z-index: 100;
+    z-index: 15;
     text-align: center;
     width: 100%;
     background-color: rgba(255, 255, 255, 0.6);
     font-size: 25px;
 
     display: none;
-
     @media (max-width: 500px) {
       display: block;
     }
