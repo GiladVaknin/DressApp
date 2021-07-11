@@ -55,6 +55,22 @@ const MultipleSelect = forwardRef((props, ref) => {
     setChoosen(event.target.value);
   };
 
+  function getColor(name) {
+    if (name === "Multi")
+      return {
+        backgroundImage:
+          "linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red)",
+      };
+    else if (name === "Neutral")
+      return {
+        backgroundColor: "#EBC8B2",
+      };
+
+    return {
+      backgroundColor: name,
+    };
+  }
+
   return (
     <div>
       <FormControl className={classes.formControl}>
@@ -75,6 +91,9 @@ const MultipleSelect = forwardRef((props, ref) => {
             <MenuItem key={name} value={name}>
               <Checkbox checked={choosen.indexOf(name) > -1} />
               <ListItemText primary={name} />
+              {props.selectName === "COLOR" ? (
+                <div className="colorCircle" style={getColor(name)}></div>
+              ) : null}
             </MenuItem>
           ))}
         </Select>

@@ -16,6 +16,18 @@ function DancingLoader(props) {
         allowFullScreen
       ></Iframe>
     </div>
+    // <div className="dancingLoader">
+    //   <Iframe
+    //     // src="../XOsX.gif"
+    //     width="100%"
+    //     height="80%"
+    //     position="absolute"
+    //     top="0"
+    //     left="0"
+    //     frameBorder="0"
+    //     allowFullScreen
+    //   ></Iframe>
+    // </div>
   );
 }
 

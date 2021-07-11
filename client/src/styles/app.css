@@ -46,6 +46,17 @@
   z-index: 10;
   height: 5vh;
   border-bottom: 1px solid rgba(172, 172, 172, 0.5);
+  width: 100vw;
+}
+
+@media (max-width: 500px) {
+  .App #filterPanel {
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+  }
 }
 
 .App #filterPanel button {
@@ -58,14 +69,43 @@
           justify-content: center;
 }
 
+.App #mobileToolTip {
+  position: fixed;
+  bottom: 0;
+  z-index: 100;
+  text-align: center;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.6);
+  font-size: 25px;
+  display: none;
+}
+
+@media (max-width: 500px) {
+  .App #mobileToolTip {
+    display: block;
+  }
+}
+
 .App .items {
   margin-top: 20px;
   display: -ms-grid;
   display: grid;
+  gap: 10px;
   -ms-grid-columns: (1fr)[4];
       grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
   overflow: hidden;
+}
+
+@media (max-width: 500px) {
+  .App .items {
+    margin-top: 20px;
+    display: -ms-grid;
+    display: grid;
+    gap: 10px;
+    -ms-grid-columns: 100%;
+        grid-template-columns: 100%;
+    overflow: hidden;
+  }
 }
 
 .App .items .item {
@@ -84,6 +124,15 @@
   background-size: cover;
   color: black;
   text-decoration: none;
+}
+
+@media (max-width: 500px) {
+  .App .items .item span {
+    opacity: 0;
+    margin-left: 100%;
+    -webkit-transition: 500ms;
+    transition: 500ms;
+  }
 }
 
 .App .items .item .itemTitle {
@@ -123,15 +172,25 @@
   text-decoration: line-through;
 }
 
+.App .items .mobileDetails span {
+  opacity: 1;
+  margin-left: 0;
+  -webkit-transition: 500ms;
+  transition: 500ms;
+}
+
 .item:hover span {
   -webkit-filter: opacity(0);
           filter: opacity(0);
 }
 
-.dancingLoader {
-  width: 100%;
-  padding-bottom: 144%;
-  position: relative;
-  overflow: hidden;
+.colorCircle {
+  width: 25px;
+  height: 20px;
+  border-radius: 3px 12px 3px;
+  margin-right: 8px;
+  padding: 1px;
+  -webkit-box-shadow: 0px 0px 2px 0px black;
+          box-shadow: 0px 0px 2px 0px black;
 }
 /*# sourceMappingURL=app.css.map */

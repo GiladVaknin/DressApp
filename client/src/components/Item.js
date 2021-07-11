@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from "react";
 import Loader from "../components/Loader";
 import Rank from "./Rank";
+import { useSwipeable } from "react-swipeable";
 const axios = require("axios");
 
 function Item(props) {
   const [item, setItem] = useState(props.item);
+  const [mobileDetails, setMobileDetails] = useState("");
+
+  const handlers = useSwipeable({
+    onSwipedLeft: (eventData) => {
+      setMobileDetails(" mobileDetails");
+    },
+    onSwipedRight: (eventData) => {
+      setMobileDetails("");
+    },
+  });
 
   useEffect(() => {
     getPreview(props.item).then((res) => setItem(res));
@@ -26,12 +37,17 @@ function Item(props) {
     if (item.prevPrice > 0)
       return (
         <>
-          <h3 className="prevPrice">{item.prevPrice} ₪</h3>
-          <h3 className="price">{item.price} ₪</h3>
+          <h3 className="prevPrice">{item.prevPrice} ILS</h3>
+          <h3 className="price">{item.price}&nbsp;ILS</h3>
           <h3 className="discountPercent">-{item.discountPercent} %</h3>
         </>
       );
-    else return <h3 className="price">{item.price} ₪</h3>;
+    else
+      return (
+        <h3 className="price">
+          {item.price ? item.price + " ILS" : "Click for price details!"}
+        </h3>
+      );
   }
 
   return (
@@ -39,8 +55,9 @@ function Item(props) {
       href={item?.linkToBuy}
       target="_blank"
       rel="noreferrer"
-      class="item"
+      className={`item${mobileDetails}`}
       style={{ backgroundImage: `url(${item?.imgSrc})` }}
+      {...handlers}
     >
       {item?.imgSrc ? (
         <>

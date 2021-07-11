@@ -11,8 +11,6 @@ function App() {
   const items = useRef([]);
   const [shownItems, setShownItems] = useState([]);
 
-  console.log(items.current);
-
   function getItems(query) {
     setShownItems([]);
     items.current = [];
@@ -76,7 +74,7 @@ function App() {
     <div className="App">
       <div id="header"></div>
       <FilterPannel getItems={getItems} />
-
+      <div id="mobileToolTip">{`<<`}Swipe left for details </div>
       {shownItems.length ? (
         <div className="items">
           {shownItems.map((item) => {
