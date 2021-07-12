@@ -18,8 +18,15 @@ function Item(props) {
   });
 
   useEffect(() => {
-    getPreview(props.item).then((res) => setItem(res));
-  }, [props.item]);
+    getPreview(props.item).then((preview) => {
+      if (preview.error) {
+        const newItem = props.getNewItem();
+        return newItem
+          ? getPreview(newItem).then(setItem)
+          : setItem({ noItem: true });
+      } else setItem(preview);
+    });
+  }, [props]);
 
   function getPreview(item) {
     return axios({
@@ -30,7 +37,7 @@ function Item(props) {
       },
     })
       .then((res) => res.data)
-      .catch(console.log);
+      .catch((e) => setItem({ error: e }));
   }
 
   function getPrice() {
@@ -49,6 +56,8 @@ function Item(props) {
         </h3>
       );
   }
+
+  if (item?.noItem) return null;
 
   return (
     <a

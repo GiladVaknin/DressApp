@@ -8,13 +8,12 @@ async function terminalxPreview(linkToBuy, openBrowser) {
       headless,
       defaultViewport: { width: 3000, height: 2000 },
     }));
-  const page = await browser.newPage();
 
+  const page = await browser.newPage();
   try {
     await page.goto(linkToBuy);
 
     const item = { storeName: "TerminalX", linkToBuy };
-
     await page.waitForSelector(".image-container_272l");
 
     const imgContainer = await page.$(".image-container_272l");

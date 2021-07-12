@@ -10,6 +10,7 @@ const axios = require("axios");
 function App() {
   const items = useRef([]);
   const [shownItems, setShownItems] = useState([]);
+  console.log(items.current);
 
   function getItems(query) {
     setShownItems([]);
@@ -77,7 +78,9 @@ function App() {
       {shownItems.length ? (
         <div className="items">
           {shownItems.map((item) => {
-            return <Item item={item} />;
+            return (
+              <Item item={item} getNewItem={() => items.current.shift()} />
+            );
           })}
         </div>
       ) : (
