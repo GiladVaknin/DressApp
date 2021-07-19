@@ -1,24 +1,12 @@
-# DressApp
+# Dress-App
 
-## GOALS: 
+## Setup & Instructions
 
-*Create an app that allows you to search clothes in many sites.
+1. Clone this repository
+2. Make sure you have [Docker](https://www.docker.com/) installed.
+3. run `docker compose up` and wait for the process to finish.
 
+- Note that when running locally, cache will be empty on first run.
 
-*Scraping and filtering in different sites.
-
-
-*Sort and Filter the products on our site.
-
-
-*Scraping for sales and analysis the data.
-
-
-
-## MISSONS:
-
-*Draw screens. ===== https://docs.google.com/document/d/1bvOtBmDk67CfNUyJyKRXsPYSXykWG1GoJgLUggzIGH8/edit?usp=sharing
-
-
-*Work plan.
-
+In your browser, go to [http://localhost:5000/](http://localhost:5000/).
+Enjoy :)
