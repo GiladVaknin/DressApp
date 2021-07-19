@@ -13,9 +13,7 @@ async function main(product) {
   const headless = process.env.headless || false;
   const browser = await puppeteer.launch({
     headless,
-    slowMo: 50,
     defaultViewport: { width: 770, height: 1024 },
-    timeout: 500000,
   });
   const page = await browser.newPage();
   try {
@@ -93,7 +91,7 @@ async function main(product) {
     );
 
     await browser.close();
-    return allItemsFormatted.filter((val) => val);
+    return allItemsFormatted.filter(Boolean);
   } catch (err) {
     console.log(err);
     browser.close();

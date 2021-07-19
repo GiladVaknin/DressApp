@@ -65,7 +65,6 @@ async function main({
     const headless = process.env.headless || false;
     const browser = await puppeteer.launch({
       headless,
-      // slowMo: 50,
       defaultViewport: { width: 1600, height: 1000 },
     });
     const page = await browser.newPage();

@@ -10,6 +10,11 @@ services:
       - headless=true
       - REDIS_HOST=redis
 
+  client:
+    build: ./client
+    ports:
+      - 5000:5000
+
   redis:
     image: docker.io/bitnami/redis:6.2
     environment:
@@ -19,6 +24,8 @@ services:
     command: redis-server --requirepass "123456789"
     volumes:
       - "redis_data:/bitnami/redis/data"
+    cap_add:
+      - SYS_ADMIN
 
 volumes:
   redis_data:

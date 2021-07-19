@@ -40,7 +40,6 @@ async function shain({
   const headless = process.env.headless || false;
   const browser = await puppeteer.launch({
     headless,
-    // slowMo: 50,
     defaultViewport: { width: 2000, height: 2000 },
   });
   const page = await browser.newPage();

@@ -2,6 +2,7 @@
   text-align: center;
   letter-spacing: 0.5px;
   overflow-y: scroll;
+  overflow-x: hidden;
   font-family: "Bebas Neue", "Karantina", cursive;
   height: 100vh;
 }
@@ -80,6 +81,8 @@
   font-size: 25px;
   display: none;
   margin-top: 10px;
+  -ms-grid-row: 5;
+  grid-row: 5;
 }
 
 .App #mobileToolTip .fas.fa-angle-double-right {
@@ -136,8 +139,9 @@
   display: grid;
   -ms-grid-columns: 100%;
       grid-template-columns: 100%;
-  -ms-grid-rows: 60% 20% 10% 10%;
-      grid-template-rows: 60% 20% 10% 10%;
+  -ms-grid-rows: 50% 10% 10% 10% 10%;
+      grid-template-rows: 50% 10% 10% 10% 10%;
+  row-gap: 2.5%;
   position: relative;
   background-color: rgba(239, 238, 238, 0.5);
   height: 50vh;
@@ -214,5 +218,20 @@
   padding: 1px;
   -webkit-box-shadow: 0px 0px 2px 0px black;
           box-shadow: 0px 0px 2px 0px black;
+}
+
+.dancingLoader {
+  position: absolute;
+  height: 70%;
+  width: 50%;
+  bottom: 0%;
+  left: 25%;
+}
+
+@media (max-width: 500px) {
+  .dancingLoader {
+    width: 100%;
+    left: 0;
+  }
 }
 /*# sourceMappingURL=app.css.map */
